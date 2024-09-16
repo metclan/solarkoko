@@ -52,7 +52,7 @@ export default function SignupPage() {
           setLoading(false); 
           toast({
             title : "Incorrect verification code",
-            variant : "destructive"
+            variant : "destructive", 
           })
         }
       }

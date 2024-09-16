@@ -44,6 +44,5 @@ const ProductSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Function to get the Product model
-export function getProductModel(): mongoose.Model<IProduct> {
-  return (mongoose.models.Product as mongoose.Model<IProduct>) || mongoose.model('Product', ProductSchema);
-}
+
+export const Product:mongoose.Model<IProduct> = mongoose.models.Product as mongoose.Model<IProduct> || mongoose.model('Product', ProductSchema)

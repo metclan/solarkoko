@@ -12,8 +12,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body >
         <div className="flex h-screen bg-gray-100"> 
             <VendorSidebar />
             <div className="flex-1 flex flex-col overflow-hidden">
@@ -23,7 +21,5 @@ export default function RootLayout({
                 </div>
             </div>
         </div>
-      </body>
-    </html>
   );
 }

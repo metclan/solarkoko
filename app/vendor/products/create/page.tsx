@@ -1,17 +1,22 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { createProduct } from '@/app/actions/products';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { PlusCircle, X } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast';
+import { useFormState, useFormStatus } from 'react-dom';
 
 const categories = ['Solar Panels', 'Inverters', 'Batteries', 'Charge Controllers', 'Accessories']
 const capacityUnits = ['volts', 'watts', 'amperes', 'kilowatt-hours', 'amp-hours']
 
 export default function AddProduct() {
+    const {toast} = useToast()
+  const [state, action] = useFormState(createProduct, { message : null, success : false})
   const [images, setImages] = useState<string[]>([])
   const [specifications, setSpecifications] = useState<{ [key: string]: string }>({})
 
@@ -36,11 +41,23 @@ export default function AddProduct() {
     newSpecs[key] = value
     setSpecifications(newSpecs)
   }
-
+  useEffect(() => {
+    if(state.success && state.message){
+        toast({
+            title : state.message, 
+            variant : "default"
+        })
+    }if(!state.success && state.message){
+        toast({
+            title : state.message, 
+            variant : "destructive"
+        })
+    }
+  }, [state])
   return (
     <div className="container mx-auto p-4 md:p-6">
       <h1 className="text-2xl font-bold mb-6 text-gray-900">Add New Product</h1>
-      <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form className="grid grid-cols-1 md:grid-cols-2 gap-6" action={action}>
         <div className='space-y-6'>
             <Card>
             <CardContent className="p-4 md:p-6">
@@ -48,15 +65,15 @@ export default function AddProduct() {
                 <div className="space-y-4">
                 <div>
                     <Label htmlFor="name">Product Name</Label>
-                    <Input id="name" className="mt-1" placeholder="Enter product name" required />
+                    <Input name="name" id="name" className="mt-1" placeholder="Enter product name" required />
                 </div>
                 <div>
                     <Label htmlFor="description">Description</Label>
-                    <Textarea id="description" className="mt-1" placeholder="Enter product description" required />
+                    <Textarea name="description" id="description" className="mt-1" placeholder="Enter product description" required />
                 </div>
                 <div>
                     <Label htmlFor="category">Category</Label>
-                    <Select required>
+                    <Select required name='category'>
                     <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
@@ -77,11 +94,11 @@ export default function AddProduct() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <Label htmlFor="price">Price</Label>
-                    <Input id="price" type="number" min="0" step="0.01" className="mt-1" placeholder="0.00" required />
+                    <Input name="price" id="price" type="number" min="0" step="0.01" className="mt-1" placeholder="0.00" required />
                 </div>
                 <div>
                     <Label htmlFor="stock">Stock</Label>
-                    <Input id="stock" type="number" min="0" className="mt-1" placeholder="Enter stock quantity" required />
+                    <Input name="quantity" id="stock" type="number" min="0" className="mt-1" placeholder="Enter stock quantity" required />
                 </div>
                 </div>
             </CardContent>
@@ -93,11 +110,11 @@ export default function AddProduct() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <Label htmlFor="capacityValue">Capacity Value</Label>
-                    <Input id="capacityValue" type="number" min="0" step="0.01" className="mt-1" placeholder="Enter capacity value" />
+                    <Input name="capacity" id="capacityValue" type="number" min="0" step="0.01" className="mt-1" placeholder="Enter capacity value" />
                 </div>
                 <div>
                     <Label htmlFor="capacityUnit">Capacity Unit</Label>
-                    <Select>
+                    <Select required name="unit">
                     <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Select a unit" />
                     </SelectTrigger>
@@ -118,11 +135,11 @@ export default function AddProduct() {
                 <div className="space-y-4">
                 <div>
                     <Label htmlFor="warranty">Warranty</Label>
-                    <Input id="warranty" className="mt-1" placeholder="Enter warranty information" />
+                    <Input name="warranty" id="warranty" className="mt-1" placeholder="Enter warranty information" />
                 </div>
                 <div>
                     <Label htmlFor="brand">Brand</Label>
-                    <Input id="brand" className="mt-1" placeholder="Enter brand name" />
+                    <Input name="brand" id="brand" className="mt-1" placeholder="Enter brand name" />
                 </div>
                 </div>
             </CardContent>
@@ -175,7 +192,7 @@ export default function AddProduct() {
                     </div>
                 ))}
                 <label className="border-2 border-dashed border-gray-300 rounded-md p-4 flex items-center justify-center cursor-pointer hover:border-orange-500 transition-colors">
-                    <input type="file" accept="image/*" multiple onChange={handleImageAdd} className="hidden" />
+                    <input name="images" type="file" accept="image/*" multiple onChange={handleImageAdd} className="hidden" />
                     <PlusCircle className="h-6 w-6 text-gray-400" />
                 </label>
                 </div>
@@ -188,13 +205,19 @@ export default function AddProduct() {
                     <Button type="button" variant="destructive" className="w-full text-white">
                         Cancel
                     </Button>
-                    <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white">
-                        Save
-                    </Button>
+                    <SubmitButton />
                 </div>
             </CardContent>
         </Card>
       </form>
     </div>
   )
+}
+
+function SubmitButton () {
+    const { pending } = useFormStatus()
+    return (                    
+    <Button disabled={pending} type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white">
+        {pending ? "Pending" : "Save"}
+    </Button>)
 }

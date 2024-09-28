@@ -9,11 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SignoutButton } from './signout-button';
-import { Prenav } from './prenav'
 import { NavSearchInput } from './search';
-import { Sun, ShoppingCart, Menu, X, Minus, Plus, Trash2 } from 'lucide-react'
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { Sun, Menu, X, } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { motion, AnimatePresence } from "framer-motion"
 

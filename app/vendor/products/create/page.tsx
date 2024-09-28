@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { PlusCircle, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast';
 import { useFormState, useFormStatus } from 'react-dom';
+import Image from 'next/image';
 
 const categories = ['Solar Panels', 'Inverters', 'Batteries', 'Charge Controllers', 'Accessories']
 const capacityUnits = ['volts', 'watts', 'amperes', 'kilowatt-hours', 'amp-hours']
@@ -53,7 +54,7 @@ export default function AddProduct() {
             variant : "destructive"
         })
     }
-  }, [state])
+  }, [state, toast])
   return (
     <div className="container mx-auto p-4 md:p-6">
       <h1 className="text-2xl font-bold mb-6 text-gray-900">Add New Product</h1>
@@ -179,7 +180,7 @@ export default function AddProduct() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {images.map((image, index) => (
                     <div key={index} className="relative">
-                    <img src={image} alt={`Product ${index + 1}`} className="w-full h-32 object-cover rounded-md" />
+                    <Image src={image} alt={`Product ${index + 1}`} className="w-full h-32 object-cover rounded-md" />
                     <Button 
                         type="button" 
                         variant="destructive" 

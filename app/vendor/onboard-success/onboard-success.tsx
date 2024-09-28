@@ -1,3 +1,4 @@
+"use client"; 
 import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Sun, ShoppingCart, DollarSign, BarChart } from 'lucide-react'
@@ -30,10 +31,10 @@ export default function VendorSuccess() {
         </div>
         <div className="text-center mb-8">
           <p className="text-lg text-gray-700 mb-4">
-            Congratulations! You're now part of our growing community of solar equipment vendors.
+            Congratulations! You&apos;re now part of our growing community of solar equipment vendors.
           </p>
           <p className="text-gray-600">
-            Here's what you can do with your new account:
+            Here&apos;s what you can do with your new account:
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

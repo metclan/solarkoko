@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { LayoutDashboard, Package, ShoppingCart, DollarSign, Boxes, PlusCircle, BarChart2, MessageSquare, HelpCircle, Settings, LogOut, X, Key } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, DollarSign, Boxes, BarChart2, MessageSquare, HelpCircle, Settings, LogOut, X } from 'lucide-react'
 import { cn } from "@/lib/utils"
 
 const sidebarItems = [

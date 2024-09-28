@@ -1,5 +1,4 @@
 import { FilterSidebar } from "./filter-sidebar"
-import { ScrollArea } from "@radix-ui/react-scroll-area"
 export default async function ProductsLayout({
     children,
   }: {

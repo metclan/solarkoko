@@ -15,20 +15,9 @@ type Props = {
 }
 
 export default function VendorProducts({tableData} : Props) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [activePage, setActivePage] = useState("Products")
+  const [activePage] = useState("Products")
   const [categoryFilter, setCategoryFilter] = useState("All")
   const [searchTerm, setSearchTerm] = useState("")
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
-
-  const filteredProducts = tableData.filter(product => 
-    (categoryFilter === "All" || product.category === categoryFilter) &&
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
   const handleEditProduct = (productId: string) => {
     // Logic to edit the product
     console.log(`Edit product ${productId}`)

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -53,7 +53,7 @@ export default function BudgetEstimator() {
     setRows(rows.map(row => {
       if (row.id === id) {
         if (field === 'appliance') {
-          const selectedAppliance = appliances.find(a => a.name === value)
+          // const selectedAppliance = appliances.find(a => a.name === value)
         //   return { ...row, [field]: value, wattage: selectedAppliance ? selectedAppliance.defaultWattage : 0 }
         }
         return { ...row, [field]: value }
@@ -98,27 +98,28 @@ export default function BudgetEstimator() {
     documentTitle: 'Solar Load Estimate',
   })
 
-  const downloadPdf = () => {
-    const printHandler = useReactToPrint({
-      content: () => componentRef.current,
-      documentTitle: 'Solar Load Estimate',
-      print: async (printIframe) => {
-        const document = printIframe.contentDocument
-        if (document) {
-          const html = document.getElementsByTagName('html')[0]
-          const exporter = new window.html2pdf.Exporter()
-          await exporter.run(html, {
-            filename: 'solar-load-estimate.pdf',
-            margin: 10,
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          })
-        }
-      },
-    })
-    printHandler()
-  }
-
-  const PrintableComponent = React.forwardRef<HTMLDivElement>((props, ref) => (
+  // const useDownloadPdf = () => {
+  //   const printHandler = useReactToPrint({
+  //     content: () => componentRef.current,
+  //     documentTitle: 'Solar Load Estimate',
+  //     print: async (printIframe) => {
+  //       const document = printIframe.contentDocument
+  //       if (document) {
+  //         const html = document.getElementsByTagName('html')[0]
+  //         const exporter = new window.html2pdf.Exporter()
+  //         await exporter.run(html, {
+  //           filename: 'solar-load-estimate.pdf',
+  //           margin: 10,
+  //           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  //         })
+  //       }
+  //     },
+  //   })
+  //   printHandler()
+  // }
+  
+  function PrintableComponent(ref : MutableRefObject<null>){
+    return (
     <div ref={ref} className="p-8 bg-white">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Solar Load Sizing Estimate</h1>
       <Table>
@@ -148,7 +149,8 @@ export default function BudgetEstimator() {
         Made with SolarKoko | www.solarkoko.com
       </div>
     </div>
-  ))
+    )
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -279,7 +281,7 @@ export default function BudgetEstimator() {
               </div>
             </DialogContent>
           </Dialog>
-          <Button onClick={downloadPdf} variant="outline" className="w-full sm:w-auto text-purple-600 border-purple-600 hover:bg-purple-50">
+          <Button variant="outline" className="w-full sm:w-auto text-purple-600 border-purple-600 hover:bg-purple-50">
             <Download className="h-4 w-4 mr-2" />
             Download PDF
           </Button>
@@ -297,13 +299,13 @@ export default function BudgetEstimator() {
         </h2>
         <ul className="list-disc pl-6 text-gray-600 space-y-2">
           <li>For appliances with different capacities, add them as separate rows instead of increasing the quantity.</li>
-          <li>If wattage isn't indicated, you can calculate it by multiplying current (Amps) and voltage (Volts).</li>
+          <li>If wattage isn&apos;t indicated, you can calculate it by multiplying current (Amps) and voltage (Volts).</li>
           <li>Use the dropdown to select the appropriate wattage unit for each appliance.</li>
         </ul>
       </footer>
 
       <div style={{ display: 'none' }}>
-        <PrintableComponent ref={componentRef} />
+        <PrintableComponent  current={null}/>
       </div>
     </div>
   )

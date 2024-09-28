@@ -1,19 +1,11 @@
 "use client";
 import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Package, ShoppingCart, DollarSign, Boxes, Menu, Bell, User } from 'lucide-react'
+import { Package, ShoppingCart, DollarSign, Boxes} from 'lucide-react'
 
 
 export default function VendorDashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [activePage, setActivePage] = useState("Dashboard")
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
-
+  const [activePage ] = useState("Dashboard")
   return (
         <main className="flex-1 overflow-y-auto bg-white p-4">
           <div className="max-w-7xl mx-auto">

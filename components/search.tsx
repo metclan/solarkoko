@@ -2,22 +2,12 @@
 import { Search } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 export function NavSearchInput () {
   const [search, setSearch] = useState<string>('')
     const searchParams = useSearchParams()
-    const pathname = usePathname(); 
-    const {replace, push} = useRouter()
-    function handleSearchItem ( term : string) {
-      // const params = new URLSearchParams(searchParams); 
-      // if(term){
-      //   params.set('q', term); 
-      // }else{
-      //   params.delete('q')
-      // }
-      // replace(`${pathname}?${params.toString()}`)
-    }
+    const { push } = useRouter()
     function handleSubmit () {
       push(`/products?q=${new URLSearchParams(search.trim())}`)
     }

@@ -3,12 +3,10 @@ import Image from 'next/image'
 import { ShoppingCart, Minus, Plus, Trash2 } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { Button } from '@/components/ui/button'
-import { Progress } from "@/components/ui/progress"
 import { useCartStore } from '@/state-management/providers/cart-provider'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -82,7 +80,7 @@ export function Cart() {
                 Continue To Checkout
               </Button>
               <p className="text-sm text-orange-600 mt-4 text-center font-medium">
-                Psst, secure your solar gear now before it's gone!
+                Psst, secure your solar gear now before it&apos;s gone!
               </p>
             </div>
           </>

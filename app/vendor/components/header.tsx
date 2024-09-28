@@ -15,8 +15,8 @@ import { Bell, User, Menu, Settings, LogOut, Key } from "lucide-react";
 import Link from "next/link";
 
 export default function VendorHeader() {
-  const [vendorName, setVendorName] = useState("John Doe"); // Replace with actual vendor name
-  const [vendorEmail, setVendorEmail] = useState("john@example.com"); // Replace with actual vendor email
+  const [vendorName] = useState("John Doe"); // Replace with actual vendor name
+  const [vendorEmail] = useState("john@example.com"); // Replace with actual vendor email
 
   return (
     <header className="bg-white border-b">

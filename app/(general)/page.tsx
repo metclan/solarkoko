@@ -6,9 +6,7 @@ import { Sun, Zap, Battery, Calculator } from 'lucide-react'
 import Link from 'next/link'
 import FeaturedProducts from '@/components/featured-products'
 
-export  default async function HomePage() {
-
-
+export default async function HomePage() {
   const categories = [
     { name: 'Solar Panels', icon: Sun, description: 'High-efficiency panels for maximum energy capture' },
     { name: 'Inverters', icon: Zap, description: 'Convert DC to AC power for your home' },

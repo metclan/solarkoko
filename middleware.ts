@@ -6,7 +6,7 @@ export default async function middleware(request: NextRequest) {
     try {
         const pathname = request.nextUrl.pathname
         const vendorRoute = "/vendor"
-        const customerRoute = "/customer"
+        const customerRoutes = ["/customer", "/orders"]
         const authenticationRoutes = ['/login', '/signup']
         const protectedRoutes = ['/become-vendor', '/welcome-vendor']
         const cookie =  request.cookies
@@ -16,7 +16,7 @@ export default async function middleware(request: NextRequest) {
             return NextResponse.redirect(new URL("http://localhost:3000/"))
         }
         // Trying to access protected routes 
-        if(pathname.startsWith(vendorRoute) || pathname.startsWith(customerRoute) || protectedRoutes.includes(pathname)){
+        if(pathname.startsWith(vendorRoute) || customerRoutes.includes(pathname) || protectedRoutes.includes(pathname)){
             //check if user has session 
             if(hasSessionCookie){
                 const userData = await decrypt(hasSessionCookie.value)

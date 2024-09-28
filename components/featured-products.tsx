@@ -3,7 +3,7 @@ import { Button } from "./ui/button"
 import Image from 'next/image'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 type FeaturedProduct = {
-  id : string; 
+  _id : string; 
   name : string; 
   category : string; 
   capacity : {
@@ -19,7 +19,7 @@ type FeaturedProduct = {
 export default async function FeaturedProducts () {
     let featuredProducts:FeaturedProduct[] = [];
     const backendApi = process.env.NEXT_PUBLIC_BACKEND_API || "http://localhost:3000"
-    const featuredProductsResponse = await fetch(`${backendApi}/api/products-display`, { method : 'GET'})
+    const featuredProductsResponse = await fetch(`${backendApi}/api/products-display`, { method : 'GET', next : { revalidate : 604800}})
     if(featuredProductsResponse.ok){
       const featuredProductsResponseJson = await featuredProductsResponse.json()
       const featuredProductsResponseArray = Object.values(featuredProductsResponseJson) as FeaturedProduct[];
@@ -29,7 +29,7 @@ export default async function FeaturedProducts () {
     <h2 className="text-3xl font-extrabold text-gray-900 mb-8">Featured Products</h2>
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {featuredProducts.map((product) => (
-        <Card key={product.id} className="hover:shadow-lg transition-shadow duration-300">
+        <Card key={product._id} className="hover:shadow-lg transition-shadow duration-300">
           <CardHeader>
             <Image height={1000} width={1000} src={product.images[0].image} alt={product.name} className="w-full h-52 object-fill rounded-t-lg" />
           </CardHeader>

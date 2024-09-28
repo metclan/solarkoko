@@ -15,8 +15,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useState } from 'react';
 import { Cart } from './cart';
 
-export default async function UnAutheticatedNav() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
+export default function UnAutheticatedNav() {
+  const [isMobileMenuOpen] = useState(false); 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       {/* <Prenav /> */}

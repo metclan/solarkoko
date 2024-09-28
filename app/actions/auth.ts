@@ -48,7 +48,14 @@ export async function login(email: string, password: string) {
         return { success: false, message: "Failed to login" };
     }
 }
-export async function signup(email: string, password: string, phone: string) {
+interface CustomerSignupFields {
+    email:string;
+    password:string;
+    firstName:string; 
+    lastName:string; 
+    phone:string
+}
+export async function signup({email, password, firstName, lastName, phone} : CustomerSignupFields) {
     let success : null | true = null
     try {
         // Email validation regex
@@ -73,18 +80,22 @@ export async function signup(email: string, password: string, phone: string) {
         const newUser = new User({
             email: trimmedEmail,
             password: hashedPassword,
-            phone: phone
+            phone: phone,
+            lastName, 
+            firstName, 
         });
 
         // Save the user to the database
         await newUser.save();
+        await createSession(newUser._id, newUser.role)
         success = true;
-        return { success: true };
     } catch (error) {
         console.error("Error during signup:", error);
         return { success: false, message: "Failed to register user" };
     }finally { 
-        redirect('/vendor')
+        if(success){
+            redirect('/')
+        }
     }
 }
 
@@ -136,11 +147,11 @@ export async function verifyCodeForLogin(verificationCode: string, email: string
             // Code is correct, delete it from Redis
             await redisClient.del(email);
             // Fetch user id 
-            const userId = await User.findOne({ email : email}, { _id : 1})
-            if(!userId) throw new Error()
+            const user = await User.findOne({ email : email}, { _id : 1, role : 1})
+            if(!user) throw new Error()
             //Create user session 
             isSuccessful = true;
-            await createSession(userId._id)
+            await createSession(user._id, user.role)
         } else {
             return null;
         }

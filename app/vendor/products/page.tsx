@@ -1,110 +1,58 @@
-'use client';
-import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { LayoutDashboard, Package, ShoppingCart, DollarSign, Boxes, PlusCircle, BarChart2, MessageSquare, HelpCircle, Settings, LogOut, Menu, X, Bell, User, Filter } from 'lucide-react'
+import { cookies } from "next/headers";
+import VendorProducts from "./products";
+export const metadata = {
+  title: 'Your Products | SolarKoko Vendor Dashboard',
+  description: 'Manage and view all your products listed on SolarKoko. Keep track of your inventory, prices, and more.',
+  keywords: 'SolarKoko, vendor dashboard, product management, solar products, inventory, manage listings',
+  openGraph: {
+    title: 'Your Products | SolarKoko Vendor Dashboard',
+    description: 'Easily manage all your solar products and stay updated with your inventory on SolarKoko.',
+    url: 'https://solarkoko.com/vendor/products',
+    type: 'website',
+    siteName: 'SolarKoko',
+    images: [
+      {
+        url: 'https://solarkoko.com/images/vendor-products-og.png', // Replace with actual image URL
+        width: 800,
+        height: 600,
+        alt: 'SolarKoko Vendor Products',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Your Products | SolarKoko Vendor Dashboard',
+    description: 'Keep track of and manage your solar product listings on SolarKoko.',
+    images: ['https://solarkoko.com/images/vendor-products-og.png'], // Replace with actual image URL
+    site: '@SolarKoko',
+  },
+  robots: 'index, follow',
+  icons: {
+    icon: '/favicon.ico',
+  },
+};
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard" },
-  { icon: Package, label: "Products" },
-  { icon: ShoppingCart, label: "Orders" },
-  { icon: DollarSign, label: "Payouts" },
-  { icon: Boxes, label: "Inventory" },
-  { icon: PlusCircle, label: "Add Product" },
-  { icon: BarChart2, label: "Analytics" },
-  { icon: MessageSquare, label: "Reviews" },
-  { icon: HelpCircle, label: "Support" },
-  { icon: Settings, label: "Settings" },
-]
-
-const products = [
-  { id: 1, name: "Solar Panel 400W", category: "Panels", price: 299.99, stock: 50 },
-  { id: 2, name: "Inverter 5kW", category: "Inverters", price: 1299.99, stock: 30 },
-  { id: 3, name: "Battery 10kWh", category: "Batteries", price: 4999.99, stock: 20 },
-  { id: 4, name: "Solar Panel 300W", category: "Panels", price: 249.99, stock: 75 },
-  { id: 5, name: "Inverter 3kW", category: "Inverters", price: 899.99, stock: 40 },
-]
-
-export default function VendorDashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [activePage, setActivePage] = useState("Products")
-  const [categoryFilter, setCategoryFilter] = useState("All")
-  const [searchTerm, setSearchTerm] = useState("")
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
+export type ProductTableItem = {
+  id : string; 
+  name : string;
+  category : string; 
+  price : number; 
+  stock : number; 
+}
+export default async function Products() {
+  const backendApi = process.env.NEXT_PUBLIC_BACKEND_API || "http://localhost:3000"
+  const cookieStore = cookies()
+  if(cookieStore.has('session')){
+    const fetchProducts = await fetch(`${backendApi}/api/vendor/products`, { method : 'GET', headers : { 'Cookie' : cookies().toString()}})
+    if(fetchProducts.ok){
+      const fetchedData = await fetchProducts.json()
+      const data = Object.values(fetchedData) as ProductTableItem[]
+      if(data.length > 0){
+        return <VendorProducts tableData = {data}/>
+      }
+      return <VendorProducts tableData={data} />
+    }else{
+      return <VendorProducts tableData={[]} />
+    }
   }
-
-  const filteredProducts = products.filter(product => 
-    (categoryFilter === "All" || product.category === categoryFilter) &&
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  return (
-    
-        <main className="flex-1 overflow-y-auto bg-white p-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-semibold text-gray-900">{activePage}</h1>
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
-                <Link href={"/vendor/products/create"}>
-                    <PlusCircle className="h-5 w-5 mr-2" />
-                    Add Product
-                </Link>
-              </Button>
-            </div>
-
-            {/* Filters */}
-            <div className="mb-6 flex flex-wrap gap-4">
-              <div className="flex items-center space-x-2">
-                <Filter className="h-5 w-5 text-gray-400" />
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="All">All Categories</SelectItem>
-                    <SelectItem value="Panels">Panels</SelectItem>
-                    <SelectItem value="Inverters">Inverters</SelectItem>
-                    <SelectItem value="Batteries">Batteries</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Input
-                className="max-w-xs"
-                placeholder="Search products"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-
-            {/* Products Table */}
-            <div className="bg-white shadow-sm border rounded-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Stock</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredProducts.map((product) => (
-                    <TableRow key={product.id}>
-                      <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>{product.category}</TableCell>
-                      <TableCell>${product.price.toFixed(2)}</TableCell>
-                      <TableCell>{product.stock}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        </main>
-  )
 }

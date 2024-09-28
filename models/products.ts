@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+type ImageUrlObject = {
+  image: string;
+}
+
 // Define the Product interface
 export interface IProduct extends mongoose.Document {
   vendor: mongoose.Types.ObjectId;
@@ -40,7 +44,7 @@ const ProductSchema = new mongoose.Schema({
     type: Map,
     of: mongoose.Schema.Types.Mixed
   },
-  images: { type: [String], required: true },
+  images: [{image : { type : String, required : true}}],
 }, { timestamps: true });
 
 // Function to get the Product model

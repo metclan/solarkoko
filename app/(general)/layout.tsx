@@ -27,14 +27,15 @@ export const metadata = {
   },
 };
 
-export default function CommonLayout({
+export default async function CommonLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  
   return (
     <>
-        <NavigationBar />
+        <NavigationBar/>
         {children}
         <Footer />
     </>

@@ -1,15 +1,17 @@
 "use server"
-import { cloudinaryApi } from "@/lib/cloudinary";
+import { uploadMultipleImages } from "@/utils/uploadImages";
 import { Product } from "@/models/products";
 import { redirect } from "next/navigation";
-import mongoose, { mongo } from "mongoose";
+import { verifySession } from "@/lib/dal";
 type FormState = {
     success : boolean
     message : string | null, 
 }
 export async function createProduct ( formState : FormState, formData : FormData,) : Promise<FormState>{
     let isSuccessful: boolean = false; 
+
     try {
+    
         const name = formData.get('name'); 
         const description = formData.get('description'); 
         const category = formData.get('category')
@@ -19,26 +21,18 @@ export async function createProduct ( formState : FormState, formData : FormData
         const unit = formData.get('unit'); 
         const warranty = formData.get('warranty'); 
         const brand = formData.get('brand')
-        const images = formData.get('images') as File;
+        const images = formData.getAll('images') as File[];
 
-        // // upload resume to cloudinary
-        // const arrayBuffer = await images.arrayBuffer();
-        // const buffer = Buffer.from(arrayBuffer);
-        // interface CloudinaryResult {
-        //     secure_url: string;
-        // }
-        // const cloudinaryResponse = await new Promise<CloudinaryResult>((resolve, reject) => {
-        //     cloudinaryApi.uploader.upload_stream(
-        //     { resource_type: 'auto' },
-        //     (error : any, result : any) => {
-        //         if (error) reject(error);
-        //         else resolve(result as CloudinaryResult);
-        //     }
-        //     ).end(buffer);
-        // });
-        //Add the product 
+        const isVerifiedSession = await verifySession()
+        if(!isVerifiedSession.isAuth){
+            return { success : false, message : "Login to create vendor account"}
+        }
+        
+        // Upload images to cloudinary 
+        const imagesUrl = await uploadMultipleImages(images)
+        
         const newProduct = new Product({
-            vendor : "66e83848f9fe3534ea8a0e03",
+            vendor : isVerifiedSession.userId,
             name, 
             description, 
             category, 
@@ -50,7 +44,7 @@ export async function createProduct ( formState : FormState, formData : FormData
             }, 
             warranty, 
             brand, 
-            images : []
+            images : imagesUrl
             
         })
         await newProduct.save(); 

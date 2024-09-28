@@ -20,6 +20,8 @@ const steps = [
 export default function SignupPage() {
   const {toast} = useToast();
   const [loading, setLoading] = useState<boolean>(false)
+  const [firstName, setFirstName] = useState<string>('')
+  const [lastName,  setLastName] = useState<string>('')
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [email, setEmail] = useState<string>("")
   const [verificationCode, setVerificationCode] = useState<string>("")
@@ -63,12 +65,9 @@ export default function SignupPage() {
   }
   async function handleFormSubmit  () {
     setLoading(true); 
-    const signupUser = await signup(email, password, phone)
-    if(!signupUser.success){
+    const signupUser = await signup({email, firstName, lastName, phone, password})
+    if(signupUser?.success === false){
       toast({title : signupUser.message, variant : "destructive"})
-      setLoading(false)
-    }else{ 
-      toast({title : signupUser.message, variant : "default", className : "bg-green-600"})
       setLoading(false)
     }
   }
@@ -107,6 +106,26 @@ export default function SignupPage() {
       case 2:
         return (
           <>
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First name</Label>
+              <Input
+                id="firstName"
+                type="text"
+                placeholder="Enter your name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
               <Input

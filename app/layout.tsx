@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import localFont from "next/font/local";
 import "./globals.css";
+import { CartStoreProvider } from "@/state-management/providers/cart-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,7 +23,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <CartStoreProvider>
+          {children}
+        </CartStoreProvider>
         <Toaster />
       </body>
     </html>

@@ -2,18 +2,12 @@ import React from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { Sun, Zap, Battery, Calculator } from 'lucide-react'
 import Link from 'next/link'
+import FeaturedProducts from '@/components/featured-products'
 
-export default function HomePage() {
-  const featuredProducts = [
-    { name: 'SolarMax Panel', type: 'Panel', power: '400W', price: 299.99, image: '/placeholder.svg?height=200&width=200' },
-    { name: 'PowerFlow Inverter', type: 'Inverter', power: '5kW', price: 1299.99, image: '/placeholder.svg?height=200&width=200' },
-    { name: 'EnerStore Battery', type: 'Battery', capacity: '10kWh', price: 4999.99, image: '/placeholder.svg?height=200&width=200' },
-    { name: 'EnerStore Battery', type: 'Battery', capacity: '10kWh', price: 4999.99, image: '/placeholder.svg?height=200&width=200' },
-    { name: 'EnerStore Battery', type: 'Battery', capacity: '10kWh', price: 4999.99, image: '/placeholder.svg?height=200&width=200' },
-  ]
+export  default async function HomePage() {
+
 
   const categories = [
     { name: 'Solar Panels', icon: Sun, description: 'High-efficiency panels for maximum energy capture' },
@@ -28,7 +22,7 @@ export default function HomePage() {
       <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white">
         <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">Power Your Home with Solar</h1>
-          <p className="mt-6 max-w-2xl text-xl">Harness the sun's energy and take control of your power consumption. Browse our curated selection of top-quality solar products.</p>
+          <p className="mt-6 max-w-2xl text-xl">Harness the sun&apos;s energy and take control of your power consumption. Browse our curated selection of top-quality solar products.</p>
           <div className="mt-10 flex space-x-4">
             <Button size="lg" className="bg-white text-orange-500 hover:bg-orange-50">
               Shop Now
@@ -41,31 +35,7 @@ export default function HomePage() {
       </div>
 
       {/* Featured Products */}
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 mb-8">Featured Products</h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredProducts.map((product) => (
-            <Card key={product.name} className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
-              </CardHeader>
-              <CardContent>
-                <Badge className="mb-2">{product.type}</Badge>
-                <CardTitle>{product.name}</CardTitle>
-                <CardDescription>
-                  {product.power && <span className="mr-2">{product.power}</span>}
-                  {product.capacity && <span className="mr-2">{product.capacity}</span>}
-                </CardDescription>
-              </CardContent>
-              <CardFooter className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-orange-500">${product.price}</span>
-                <Button variant="default" className="bg-orange-500 hover:bg-orange-600 text-white">Add to Cart</Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      </div>
-
+      <FeaturedProducts />
       {/* Product Categories */}
       <div className="bg-gray-100">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">

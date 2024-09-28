@@ -1,5 +1,5 @@
 import { Category } from "@/models/category";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 export async function POST () {
     // Array of categories with parent-child relationships
 const categories = [
@@ -222,4 +222,9 @@ const categories = [
     }
     }
     return NextResponse.json({message : "Categories added"}, { status : 200})  
+}
+
+export async function GET (req: NextRequest) {
+  const fetchCategories = await Category.find({});
+  return NextResponse.json({ ...fetchCategories }, { status : 200})
 }

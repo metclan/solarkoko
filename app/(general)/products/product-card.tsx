@@ -4,9 +4,9 @@ import Image from 'next/image'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Star, Eye, ShoppingCart } from 'lucide-react'
-import { useCartStore } from '@/state-management/providers/cart-provider'
+import { Star, Eye } from 'lucide-react'
 import { Skeleton } from "@/components/ui/skeleton"
+import { AddToCartButton } from '@/components/add-to-cart';
 
 interface ProductCardProps {
   _id: string
@@ -71,16 +71,6 @@ export default function ProductCard({
   reviews,
   images
 }: ProductCardProps) {
-  const { addToCart } = useCartStore(state => state)
-  function handleAddToCart() {
-    addToCart({
-      _id,
-      name,
-      image: images[0].image,
-      price,
-      quantity: 1,
-    })
-  }
   return (
     <Card className="flex flex-col h-full hover:shadow-lg transition-shadow duration-300" key={_id}>
       <div className="relative w-full pt-[75%]">
@@ -144,10 +134,7 @@ export default function ProductCard({
             <Eye className="w-4 h-4 mr-2" />
             View
           </Button>
-          <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddToCart}>
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Add
-          </Button>
+          <AddToCartButton item={{ _id, name, price, quantity : 1, image : images[0].image}} quantityRequested={1}/>
         </div>
       </CardFooter>
     </Card>

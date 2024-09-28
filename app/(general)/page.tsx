@@ -8,14 +8,13 @@ import FeaturedProducts from '@/components/featured-products'
 
 export default async function HomePage() {
   const categories = [
-    { name: 'Solar Panels', icon: Sun, description: 'High-efficiency panels for maximum energy capture' },
-    { name: 'Inverters', icon: Zap, description: 'Convert DC to AC power for your home' },
-    { name: 'Batteries', icon: Battery, description: 'Store excess energy for use anytime' },
+    { name: 'Solar Panels', icon: Sun, description: 'High-efficiency panels for maximum energy capture', link : "/products?q=solar%20panels=&category=solar-panels" },
+    { name: 'Inverters', icon: Zap, description: 'Convert DC to AC power for your home', link : "/products?q=inverters=&category=inverters"},
+    { name: 'Batteries', icon: Battery, description: 'Store excess energy for use anytime', link: "/products?q=batteries=&category=batteries"},
   ]
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white">
         <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
@@ -31,7 +30,6 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
-
       {/* Featured Products */}
       <FeaturedProducts />
       {/* Product Categories */}
@@ -51,7 +49,11 @@ export default async function HomePage() {
                   <CardDescription>{category.description}</CardDescription>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="outline" className="w-full">Explore {category.name}</Button>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href={category.link}>
+                      Explore {category.name}
+                    </Link>
+                  </Button>
                 </CardFooter>
               </Card>
             ))}

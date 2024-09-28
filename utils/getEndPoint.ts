@@ -1,0 +1,1 @@
+export const getEndPoint = ():string => process.env.NEXT_PUBLIC_BACKEND_API || "http://localhost:3000"

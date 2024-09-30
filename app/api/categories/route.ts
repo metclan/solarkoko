@@ -225,6 +225,7 @@ const categories = [
 }
 
 export async function GET (req: NextRequest) {
+  console.log(req); 
   const fetchCategories = await Category.find({});
   return NextResponse.json({ ...fetchCategories }, { status : 200})
 }

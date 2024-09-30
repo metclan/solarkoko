@@ -1,6 +1,8 @@
 import { createStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { getEndPoint } from '@/utils/getEndPoint';
+import { toast } from '@/hooks/use-toast';
+import { verifySession } from '@/lib/dal';
 
 type CartItem = {
     _id: string;
@@ -19,7 +21,7 @@ type ServerResponse = {
 export type CartState = {
     cartItems: CartItem[];
     isAuthenticated: boolean;
-    pendingRequests: Set<string>;
+    pendingRequests: string[];
 }
 
 export type CartActions = {
@@ -30,6 +32,9 @@ export type CartActions = {
     setIsAuthenticated: (isAuth: boolean) => void;
     syncWithDatabase: () => Promise<void>;
     clearCart: () => void;
+    addPendingRequest: (id: string) => void;
+    removePendingRequest: (id: string) => void;
+    isPendingRequest: (id: string) => boolean;
 }
 
 export type CartStore = CartActions & CartState;
@@ -37,7 +42,7 @@ export type CartStore = CartActions & CartState;
 const defaultInitState: CartState = {
     cartItems: [],
     isAuthenticated: false,
-    pendingRequests: new Set(),
+    pendingRequests: [],
 }
 
 const saveToDatabase = async (cartItems: CartItem[]): Promise<void> => {
@@ -48,13 +53,11 @@ const saveToDatabase = async (cartItems: CartItem[]): Promise<void> => {
 }
 
 const checkServerStock = async (itemId: string): Promise<ServerResponse> => {
-    // Implement your server request logic here
-    // console.log(`Checking server stock for item ${itemId}`);
-    const fetchProduct = await fetch(`${getEndPoint()}/api/cart?productId=${itemId}`, { method : "GET"})
-    // Mock response
+    const fetchProduct = await fetch(`${getEndPoint()}/api/cart?productId=${itemId}`, { method: "GET" });
+    const data = await fetchProduct.json();
     return {
-        currentPrice: 10.99,
-        availableQuantity: Math.floor(Math.random() * 10) + 1, // Random number between 1 and 10
+        currentPrice: data.currentPrice,
+        availableQuantity: data.availableQuantity,
     };
 }
 
@@ -64,53 +67,54 @@ export const createCart = (initState: CartState = defaultInitState) => {
             (set, get) => ({
                 ...initState,
                 addToCart: async (newItem: CartItem, requestedQuantity: number) => {
-                    set((state) => ({ pendingRequests: new Set(state.pendingRequests).add(newItem._id) }));
-                    
+                    get().addPendingRequest(newItem._id);
                     try {
                         const serverResponse = await checkServerStock(newItem._id);
                         
                         set((state) => {
                             const existingItem = state.cartItems.find(item => item._id === newItem._id);
                             let updatedCartItems = [...state.cartItems];
-                            
-                            if (serverResponse.availableQuantity >= requestedQuantity) {
+                            const existingQuantity = existingItem ? existingItem.quantity : 0;
+                            const totalQuantity = existingQuantity + requestedQuantity;
+                
+                            // Check if the total quantity exceeds available quantity
+                            if (totalQuantity <= serverResponse.availableQuantity) {
                                 if (existingItem) {
                                     updatedCartItems = state.cartItems.map((item) => 
                                         item._id === newItem._id 
-                                            ? { ...item, quantity: item.quantity + requestedQuantity, price: serverResponse.currentPrice } 
+                                            ? { ...item, quantity: totalQuantity, price: serverResponse.currentPrice } 
                                             : item
                                     );
                                 } else {
                                     updatedCartItems.push({ ...newItem, quantity: requestedQuantity, price: serverResponse.currentPrice });
                                 }
-                                
+                
                                 if (state.isAuthenticated) {
                                     saveToDatabase(updatedCartItems);
                                 }
-                                
-                                console.log(`Added ${requestedQuantity} of item ${newItem._id} to cart`);
+                                toast({
+                                    title: `Added to cart`, 
+                                    description: newItem.name,
+                                    variant: 'default',
+                                    className: 'text-black bg-white'
+                                });
                             } else {
-                                console.log(`This vendor has only ${serverResponse.availableQuantity} of this product. Please check other sellers for the same product.`);
+                                toast({
+                                    title: `Cannot add item`, 
+                                    description: `This vendor has only ${serverResponse.availableQuantity} of this item available. \nCheck other vendors for this item`,
+                                    variant: 'destructive',
+                                    className: 'text-black bg-white'
+                                });
                             }
                             
-                            const newPendingRequests = new Set(state.pendingRequests);
-                            newPendingRequests.delete(newItem._id);
-                            
-                            return { 
-                                cartItems: updatedCartItems,
-                                pendingRequests: newPendingRequests
-                            };
+                            return { cartItems: updatedCartItems };
                         });
                     } catch (error) {
                         console.error('Error while adding to cart:', error);
-                        set((state) => {
-                            const newPendingRequests = new Set(state.pendingRequests);
-                            newPendingRequests.delete(newItem._id);
-                            return { pendingRequests: newPendingRequests };
-                        });
+                    } finally {
+                        get().removePendingRequest(newItem._id);
                     }
                 },
-                
                 removeFromCart: (id: string) => set((state) => {
                     const updatedCartItems = state.cartItems.filter((item) => item._id !== id);
                     if (state.isAuthenticated) {
@@ -120,14 +124,19 @@ export const createCart = (initState: CartState = defaultInitState) => {
                 }),
                 
                 increaseQuantity: async (id: string) => {
-                    set((state) => ({ pendingRequests: new Set(state.pendingRequests).add(id) }));
-                    
+                    get().addPendingRequest(id);
                     try {
                         const serverResponse = await checkServerStock(id);
                         
                         set((state) => {
                             const item = state.cartItems.find(item => item._id === id);
                             if (!item) {
+                                toast({
+                                    title : `Item not in cart`, 
+                                    description : "This item was not found in the cart",
+                                    variant : 'destructive',
+                                    className : 'text-black bg-white'
+                                })
                                 throw new Error(`Item with id ${id} not found in cart`);
                             }
                             
@@ -142,34 +151,27 @@ export const createCart = (initState: CartState = defaultInitState) => {
                                 if (state.isAuthenticated) {
                                     saveToDatabase(updatedCartItems);
                                 }
-                                
-                                console.log(`Increased quantity of item ${id} to ${item.quantity + 1}`);
                             } else {
-                                console.log(`Cannot increase quantity. This vendor has only ${serverResponse.availableQuantity} of this product available.`);
+                                toast({
+                                    title: `Cannot add item`, 
+                                    description: `This vendor has only ${serverResponse.availableQuantity} of this item available. \nCheck other vendors for this item`,
+                                    variant: 'destructive',
+                                    className: 'text-black bg-white'
+                                });
                                 updatedCartItems = state.cartItems;
                             }
                             
-                            const newPendingRequests = new Set(state.pendingRequests);
-                            newPendingRequests.delete(id);
-                            
-                            return { 
-                                cartItems: updatedCartItems,
-                                pendingRequests: newPendingRequests
-                            };
+                            return { cartItems: updatedCartItems };
                         });
                     } catch (error) {
                         console.error('Error while increasing quantity:', error);
-                        set((state) => {
-                            const newPendingRequests = new Set(state.pendingRequests);
-                            newPendingRequests.delete(id);
-                            return { pendingRequests: newPendingRequests };
-                        });
+                    } finally {
+                        get().removePendingRequest(id);
                     }
                 },
                 
                 decreaseQuantity: async (id: string) => {
-                    set((state) => ({ pendingRequests: new Set(state.pendingRequests).add(id) }));
-                    
+                    get().addPendingRequest(id);
                     try {
                         const serverResponse = await checkServerStock(id);
                         
@@ -206,21 +208,12 @@ export const createCart = (initState: CartState = defaultInitState) => {
                                 updatedCartItems = state.cartItems;
                             }
                             
-                            const newPendingRequests = new Set(state.pendingRequests);
-                            newPendingRequests.delete(id);
-                            
-                            return { 
-                                cartItems: updatedCartItems,
-                                pendingRequests: newPendingRequests
-                            };
+                            return { cartItems: updatedCartItems };
                         });
                     } catch (error) {
                         console.error('Error while decreasing quantity:', error);
-                        set((state) => {
-                            const newPendingRequests = new Set(state.pendingRequests);
-                            newPendingRequests.delete(id);
-                            return { pendingRequests: newPendingRequests };
-                        });
+                    } finally {
+                        get().removePendingRequest(id);
                     }
                 },
                 
@@ -231,7 +224,19 @@ export const createCart = (initState: CartState = defaultInitState) => {
                         await saveToDatabase(state.cartItems);
                     }
                 },
-                clearCart: () => set({ cartItems: [] })
+                clearCart: () => set({ cartItems: [] }),
+                addPendingRequest: (id: string) => set((state) => {
+                    const freshArray:string[] = []
+                    freshArray.push(id)
+                    freshArray.push(...state.pendingRequests)
+                    return ({
+                        pendingRequests: freshArray
+                    })})
+                ,
+                removePendingRequest: (id: string) => set((state) => ({
+                    pendingRequests: state.pendingRequests.filter(requestId => requestId !== id)
+                })),
+                isPendingRequest: (id: string) => get().pendingRequests.includes(id)
             }),
             {
                 name: 'cart-storage',

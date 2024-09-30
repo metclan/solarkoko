@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Star, Eye } from 'lucide-react'
 import { Skeleton } from "@/components/ui/skeleton"
 import { AddToCartButton } from '@/components/add-to-cart';
+import Link from 'next/link';
 
 interface ProductCardProps {
   _id: string
@@ -62,9 +63,9 @@ export default function ProductCard({
   _id,
   name,
   description,
-  power,
-  voltage,
-  type,
+  // power,
+  // voltage,
+  // type,
   price,
   originalPrice,
   rating,
@@ -74,14 +75,16 @@ export default function ProductCard({
   return (
     <Card className="flex flex-col h-full hover:shadow-lg transition-shadow duration-300" key={_id}>
       <div className="relative w-full pt-[75%]">
-        <Image
-          src={images[0].image}
-          alt={name}
-          layout="fill"
-          objectFit="cover"
-          className="rounded-t-lg"
-          priority
-        />
+        <Link href={`/product/${_id}/${name.toLowerCase().replace(/\s+/g, '-')}`}>
+          <Image
+            src={images[0].image}
+            alt={name}
+            layout="fill"
+            objectFit="cover"
+            className="rounded-t-lg"
+            priority
+          />
+        </Link>
       </div>
       <CardContent className="flex-grow p-4">
         <h3 className="text-lg font-semibold mb-2 line-clamp-2">{name}</h3>
@@ -99,7 +102,7 @@ export default function ProductCard({
           </span>
         </div>
         <p className="text-sm text-gray-600 mb-2 line-clamp-2">{description}</p>
-        <div className="grid grid-cols-3 gap-2 mb-2">
+        {/* <div className="grid grid-cols-3 gap-2 mb-2">
           <Badge variant="secondary" className="justify-center text-xs">
             {power}W
           </Badge>
@@ -109,7 +112,7 @@ export default function ProductCard({
           <Badge variant="secondary" className="justify-center text-xs">
             {type}
           </Badge>
-        </div>
+        </div> */}
       </CardContent>
       <CardFooter className="flex flex-col p-4 bg-gray-50 rounded-b-lg">
         <div className="flex justify-between items-center w-full mb-2">
@@ -130,9 +133,11 @@ export default function ProductCard({
           )}
         </div>
         <div className="flex space-x-2 w-full">
-          <Button variant="outline" className="flex-1">
-            <Eye className="w-4 h-4 mr-2" />
-            View
+          <Button variant="outline" className="flex-1" asChild>
+            <Link href={`/product/${_id}/${name.toLowerCase().replace(/\s+/g, '-')}`}>
+              <Eye className="w-4 h-4 mr-2" />
+              View
+            </Link>
           </Button>
           <AddToCartButton item={{ _id, name, price, quantity : 1, image : images[0].image}} quantityRequested={1}/>
         </div>

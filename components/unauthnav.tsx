@@ -34,9 +34,6 @@ export default function UnAutheticatedNav() {
             <Link href="/products" className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
               Products
             </Link>
-            <Link href="/how-it-works" className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-              How It Works
-            </Link>
             <Link href="/tools" className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
               Tools
             </Link>

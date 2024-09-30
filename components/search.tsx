@@ -2,11 +2,10 @@
 import { Search } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 export function NavSearchInput () {
   const [search, setSearch] = useState<string>('')
-    const searchParams = useSearchParams()
     const { push } = useRouter()
     function handleSubmit () {
       push(`/products?q=${new URLSearchParams(search.trim())}`)
@@ -26,7 +25,6 @@ export function NavSearchInput () {
               onChange={(e) => {setSearch(e.target.value)}}
               type="search"
               value={search}
-              defaultValue={searchParams.get('q')?.toString()}
             />
           </div>
           <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white rounded-r-md"

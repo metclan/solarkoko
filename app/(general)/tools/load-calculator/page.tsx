@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef, MutableRefObject } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { PlusCircle, Trash2, Info, FileText, Share, Download, Printer } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { PlusCircle, Trash2, Info, FileText, Printer } from 'lucide-react'
 
 const appliances = [
   { name: 'Television', defaultWattage: 100 },
@@ -32,12 +32,48 @@ interface ApplianceRow {
   hours: number;
 }
 
+const PrintableComponent = React.forwardRef<HTMLDivElement, { rows: ApplianceRow[], totalEnergy: number }>((props, ref) => {
+  return (
+    <div ref={ref} className="p-8 bg-white">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Solar Load Sizing Estimate</h1>
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-100">
+            <TableHead className="font-bold">Appliance</TableHead>
+            <TableHead className="font-bold">Quantity</TableHead>
+            <TableHead className="font-bold">Wattage</TableHead>
+            <TableHead className="font-bold">Hours per day</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {props.rows.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell className="font-medium">{row.appliance}</TableCell>
+              <TableCell>{row.quantity}</TableCell>
+              <TableCell>{`${row.wattage} ${row.wattageUnit}`}</TableCell>
+              <TableCell>{row.hours}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="mt-6 text-xl font-bold">
+        Total Daily Energy: {props.totalEnergy.toFixed(2)} kWh
+      </div>
+      <div className="mt-8 text-sm text-gray-500 text-center">
+        Made with SolarKoko | www.solarkoko.com
+      </div>
+    </div>
+  )
+})
+
+PrintableComponent.displayName = 'PrintableComponent'
+
 export default function BudgetEstimator() {
   const [rows, setRows] = useState<ApplianceRow[]>([
     { id: 1, appliance: 'Television', quantity: 1, wattage: 100, wattageUnit: 'W', hours: 1 }
   ])
   const [totalEnergy, setTotalEnergy] = useState(0)
-  const [shareUrl, setShareUrl] = useState('')
+  const [shareUrl] = useState('')
   const componentRef = useRef(null)
 
   const addRow = () => {
@@ -54,7 +90,7 @@ export default function BudgetEstimator() {
       if (row.id === id) {
         if (field === 'appliance') {
           // const selectedAppliance = appliances.find(a => a.name === value)
-        //   return { ...row, [field]: value, wattage: selectedAppliance ? selectedAppliance.defaultWattage : 0 }
+          // return { ...row, [field]: value, wattage: selectedAppliance ? selectedAppliance.defaultWattage : row.wattage }
         }
         return { ...row, [field]: value }
       }
@@ -86,71 +122,17 @@ export default function BudgetEstimator() {
     alert("Quote generation functionality would be implemented here.")
   }
 
-  const shareEstimate = () => {
-    // In a real application, this would generate a unique URL for sharing
-    const uniqueId = Math.random().toString(36).substring(2, 15)
-    const url = `https://solarkoko.com/share/${uniqueId}`
-    setShareUrl(url)
-  }
+  // const shareEstimate = () => {
+  //   // In a real application, this would generate a unique URL for sharing
+  //   const uniqueId = Math.random().toString(36).substring(2, 15)
+  //   const url = `https://solarkoko.com/share/${uniqueId}`
+  //   setShareUrl(url)
+  // }
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: 'Solar Load Estimate',
   })
-
-  // const useDownloadPdf = () => {
-  //   const printHandler = useReactToPrint({
-  //     content: () => componentRef.current,
-  //     documentTitle: 'Solar Load Estimate',
-  //     print: async (printIframe) => {
-  //       const document = printIframe.contentDocument
-  //       if (document) {
-  //         const html = document.getElementsByTagName('html')[0]
-  //         const exporter = new window.html2pdf.Exporter()
-  //         await exporter.run(html, {
-  //           filename: 'solar-load-estimate.pdf',
-  //           margin: 10,
-  //           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-  //         })
-  //       }
-  //     },
-  //   })
-  //   printHandler()
-  // }
-  
-  function PrintableComponent(ref : MutableRefObject<null>){
-    return (
-    <div ref={ref} className="p-8 bg-white">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Solar Load Sizing Estimate</h1>
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead className="font-bold">Appliance</TableHead>
-            <TableHead className="font-bold">Quantity</TableHead>
-            <TableHead className="font-bold">Wattage</TableHead>
-            <TableHead className="font-bold">Hours per day</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell className="font-medium">{row.appliance}</TableCell>
-              <TableCell>{row.quantity}</TableCell>
-              <TableCell>{`${row.wattage} ${row.wattageUnit}`}</TableCell>
-              <TableCell>{row.hours}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <div className="mt-6 text-xl font-bold">
-        Total Daily Energy: {totalEnergy.toFixed(2)} kWh
-      </div>
-      <div className="mt-8 text-sm text-gray-500 text-center">
-        Made with SolarKoko | www.solarkoko.com
-      </div>
-    </div>
-    )
-  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -260,15 +242,15 @@ export default function BudgetEstimator() {
             Generate Quote
           </Button>
           <Dialog>
-            <DialogTrigger asChild>
+            {/* <DialogTrigger asChild>
               <Button onClick={shareEstimate} variant="outline" className="w-full sm:w-auto text-blue-600 border-blue-600 hover:bg-blue-50">
                 <Share className="h-4 w-4 mr-2" />
                 Share
               </Button>
-            </DialogTrigger>
+            </DialogTrigger> */}
             <DialogContent className='bg-white'>
               <DialogHeader>
-                <DialogTitle>Share Your Estimate</DialogTitle>
+                <DialogTitle>Share Your Load</DialogTitle>
               </DialogHeader>
               <div className="mt-4">
                 <p className="text-sm text-gray-500 mb-2">Copy this URL to share your estimate:</p>
@@ -281,10 +263,10 @@ export default function BudgetEstimator() {
               </div>
             </DialogContent>
           </Dialog>
-          <Button variant="outline" className="w-full sm:w-auto text-purple-600 border-purple-600 hover:bg-purple-50">
+          {/* <Button variant="outline" className="w-full sm:w-auto text-purple-600 border-purple-600 hover:bg-purple-50">
             <Download className="h-4 w-4 mr-2" />
             Download PDF
-          </Button>
+          </Button> */}
           <Button onClick={handlePrint} variant="outline" className="w-full sm:w-auto text-red-600 border-red-600 hover:bg-red-50">
             <Printer className="h-4 w-4 mr-2" />
             Print
@@ -305,7 +287,7 @@ export default function BudgetEstimator() {
       </footer>
 
       <div style={{ display: 'none' }}>
-        <PrintableComponent  current={null}/>
+        <PrintableComponent ref={componentRef} rows={rows} totalEnergy={totalEnergy} />
       </div>
     </div>
   )

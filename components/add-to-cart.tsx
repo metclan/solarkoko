@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "./ui/button"
 import { ShoppingCart } from "lucide-react"
 import { useCartStore } from "@/state-management/providers/cart-provider"
@@ -13,9 +14,9 @@ type ButtonProps = {
     quantityRequested : number;
 
 }
-export function AddToCartButton ( {item : { _id, name, image , price, quantity }, quantityRequested } : ButtonProps) {
+export function AddToCartButton ({item : { _id, name, image , price, quantity }, quantityRequested } : ButtonProps) {
     const {addToCart, pendingRequests} = useCartStore(state => state)
-    const isLoading = pendingRequests.has(_id)
+    const isLoading = pendingRequests.includes(_id);
     function handleAddToCart() {
         addToCart({
             _id,

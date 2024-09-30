@@ -66,14 +66,14 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
             <span className="block">Not sure where to start?</span>
-            <span className="block text-orange-200">Try our Solar Budget Calculator</span>
+            <span className="block text-orange-200">Try our Solar Load Calculator</span>
           </h2>
           <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div className="inline-flex rounded-md shadow">
               <Button size="lg" className="bg-white text-orange-500 hover:bg-orange-50" asChild>
-                <Link href="/budget-estimator">
+                <Link href="/tools/load-calculator">
                   <Calculator className="mr-2 h-5 w-5" />
-                  Calculate Your Needs
+                  Calculate Your Load
                 </Link>
               </Button>
             </div>

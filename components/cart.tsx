@@ -12,6 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {formatCurrency}  from '@/app/utils/formatCurrency'
+import Link from 'next/link'
 
 export function Cart() {
   const { cartItems, removeFromCart, increaseQuantity, decreaseQuantity } = useCartStore(state => state)
@@ -76,8 +77,10 @@ export function Cart() {
                 <span className="text-2xl font-bold text-gray-900">{formatCurrency(subtotal)}</span>
               </div>
               <Separator className="my-4" />
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 text-lg">
-                Continue To Checkout
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 text-lg" asChild>
+                <Link href="/checkout">
+                  Continue To Checkout
+                </Link>
               </Button>
               <p className="text-sm text-orange-600 mt-4 text-center font-medium">
                 Psst, secure your solar gear now before it&apos;s gone!

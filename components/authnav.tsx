@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { verifyUser } from "@/lib/dal";
+import { Cart } from './cart';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +45,7 @@ export default async function AuthenticatedNav() {
           </div>
           <div className="flex items-center">
             {/* Cart */}
+            <Cart />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="lg" className="ml-4 p-2">

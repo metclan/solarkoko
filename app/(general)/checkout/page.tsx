@@ -1,184 +1,255 @@
 "use client"
 
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { useCartStore } from '@/state-management/providers/cart-provider'
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent } from "@/components/ui/card"
-import { Star, Plus, Minus, ShoppingCart } from 'lucide-react'
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { PaystackButton } from 'react-paystack'
+import { PlusCircle, Edit2, CreditCard } from 'lucide-react'
 
-interface ProductCheckoutProps {
-  product: {
-    _id: string
-    name: string
-    description: string
-    images: string[]
-    price: number
-    category: string
-    vendorName: string
-    rating: number
-    reviews: number
-    specifications: { [key: string]: string }
-    warranty: string
-    additionalInfo: string
+const existingAddresses = [
+  {
+    id: 1,
+    name: "Chibyke Harmony",
+    street: "Tetlow Road",
+    city: "Owerri-Wetheral",
+    state: "Imo",
+    zipCode: "",
+    phone: "+234 8166211248",
+    isDefault: true
+  },
+  {
+    id: 2,
+    name: "Chibyke Harmony",
+    street: "123 Solar Street",
+    city: "Lagos",
+    state: "Lagos",
+    zipCode: "",
+    phone: "+234 8166211248",
+    isDefault: false
   }
-}
+]
 
-export default function ProductCheckout({ product }: ProductCheckoutProps) {
-  const [quantity, setQuantity] = useState(1)
-  const [currentImage, setCurrentImage] = useState(0)
-  const { addToCart } = useCartStore(state => state)
+export default function CheckoutPage() {
+  const { cartItems} = useCartStore(state => state)
+  const total = 100
+  const [selectedAddressId, setSelectedAddressId] = useState(existingAddresses.find(addr => addr.isDefault)?.id || 1)
+  const [isAddingNewAddress, setIsAddingNewAddress] = useState(false)
+  const [newAddress, setNewAddress] = useState({
+    name: '',
+    street: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    phone: ''
+  })
+  const [deliveryMethod, setDeliveryMethod] = useState('standard')
 
-  const handleAddToCart = () => {
-    addToCart({
-      _id: product._id,
-      name: product.name,
-      image: product.images[0],
-      price: product.price,
-      quantity: quantity,
-    }, 1)
+  const handleNewAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewAddress({ ...newAddress, [e.target.name]: e.target.value })
+  }
+
+  const handleAddNewAddress = () => {
+    console.log("New address to be added:", newAddress)
+    setIsAddingNewAddress(false)
+    setNewAddress({
+      name: '',
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      phone: ''
+    })
+  }
+
+  const handlePaystackSuccess = (reference : string) => {
+    console.log("Payment successful", reference)
+  }
+
+  const handlePaystackClose = () => {
+    console.log("Payment window closed")
+  }
+
+  const paystackConfig = {
+    reference: (new Date()).getTime().toString(),
+    email: "customer@example.com",
+    amount: total * 100,
+    publicKey: 'YOUR_PAYSTACK_PUBLIC_KEY',
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Product Images */}
-        <div>
-          <div className="relative aspect-square mb-4">
-            <Image
-              src={product.images[currentImage]}
-              alt={product.name}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-lg"
-            />
-          </div>
-          <div className="flex space-x-2 overflow-x-auto">
-            {product.images.map((image, index) => (
-              <div
-                key={index}
-                className={`relative w-20 h-20 cursor-pointer ${
-                  index === currentImage ? 'border-2 border-orange-500' : ''
-                }`}
-                onClick={() => setCurrentImage(index)}
-              >
-                <Image
-                  src={image}
-                  alt={`${product.name} thumbnail ${index + 1}`}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Product Details */}
-        <div>
-          <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-          <div className="flex items-center mb-4">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < Math.floor(product.rating)
-                      ? 'text-yellow-400 fill-current'
-                      : 'text-gray-300'
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="ml-2 text-sm text-gray-600">
-              ({product.reviews} reviews)
-            </span>
-          </div>
-          <p className="text-2xl font-bold text-orange-500 mb-4">
-            ₦{product.price.toLocaleString()}
-          </p>
-          <Badge className="mb-4">{product.category}</Badge>
-          <p className="mb-4">Sold by: {product.vendorName}</p>
-          
-          {/* Add to Cart */}
-          <div className="flex items-center mb-6">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-            <Input
-              type="number"
-              min="1"
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-              className="w-20 mx-2 text-center"
-            />
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setQuantity(quantity + 1)}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button className="ml-4 bg-orange-500 hover:bg-orange-600" onClick={handleAddToCart}>
-              <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
-            </Button>
-          </div>
-
-          {/* Specifications */}
-          <Card className="mb-6">
-            <CardContent className="p-4">
-              <h3 className="font-semibold mb-2">Specifications:</h3>
-              <ul className="list-disc pl-5">
-                {Object.entries(product.specifications).map(([key, value]) => (
-                  <li key={key}>
-                    <span className="font-medium">{key}:</span> {value}
-                  </li>
+    <div className="container mx-auto px-4 py-8 bg-white">
+      <h1 className="text-3xl font-bold mb-8 text-center text-orange-600">Checkout</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-8">
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="border-b border-gray-200">
+              <CardTitle className="text-orange-600 text-xl">Customer Address</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <RadioGroup value={selectedAddressId.toString()} onValueChange={(value) => setSelectedAddressId(parseInt(value))}>
+                {existingAddresses.map((address) => (
+                  <div key={address.id} className="flex items-center space-x-2 mb-4 p-3 border border-gray-200 rounded-md">
+                    <RadioGroupItem value={address.id.toString()} id={`address-${address.id}`} />
+                    <Label htmlFor={`address-${address.id}`} className="flex-grow">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-gray-900">{address.name}</span>
+                        <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-700">
+                          <Edit2 className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {address.street}, {address.city}, {address.state}
+                      </div>
+                      <div className="text-sm text-gray-600">{address.phone}</div>
+                      {address.isDefault && (
+                        <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full mt-1 inline-block">
+                          Default Address
+                        </span>
+                      )}
+                    </Label>
+                  </div>
                 ))}
-              </ul>
+              </RadioGroup>
+              {!isAddingNewAddress ? (
+                <Button 
+                  onClick={() => setIsAddingNewAddress(true)}
+                  variant="outline"
+                  className="mt-4 text-orange-600 border-orange-300 hover:bg-orange-50"
+                >
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Add New Address
+                </Button>
+              ) : (
+                <div className="mt-4 space-y-4">
+                  <Input 
+                    placeholder="Full Name" 
+                    name="name" 
+                    value={newAddress.name} 
+                    onChange={handleNewAddressChange}
+                  />
+                  <Input 
+                    placeholder="Street Address" 
+                    name="street" 
+                    value={newAddress.street} 
+                    onChange={handleNewAddressChange}
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input 
+                      placeholder="City" 
+                      name="city" 
+                      value={newAddress.city} 
+                      onChange={handleNewAddressChange}
+                    />
+                    <Input 
+                      placeholder="State" 
+                      name="state" 
+                      value={newAddress.state} 
+                      onChange={handleNewAddressChange}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input 
+                      placeholder="Zip Code" 
+                      name="zipCode" 
+                      value={newAddress.zipCode} 
+                      onChange={handleNewAddressChange}
+                    />
+                    <Input 
+                      placeholder="Phone" 
+                      name="phone" 
+                      value={newAddress.phone} 
+                      onChange={handleNewAddressChange}
+                    />
+                  </div>
+                  <div className="flex justify-end space-x-2">
+                    <Button 
+                      onClick={() => setIsAddingNewAddress(false)}
+                      variant="outline"
+                      className="text-gray-600 border-gray-300 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={handleAddNewAddress}
+                      className="bg-orange-600 text-white hover:bg-orange-700"
+                    >
+                      Save Address
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="border-b border-gray-200">
+              <CardTitle className="text-orange-600 text-xl">Delivery Details</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <RadioGroup value={deliveryMethod} onValueChange={setDeliveryMethod}>
+                <div className="flex items-center space-x-2 mb-2">
+                  <RadioGroupItem value="standard" id="standard" />
+                  <Label htmlFor="standard">Standard Delivery (3-5 business days)</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="express" id="express" />
+                  <Label htmlFor="express">Express Delivery (1-2 business days)</Label>
+                </div>
+              </RadioGroup>
+            </CardContent>
+          </Card>
+
+          <Card className="border-gray-200 shadow-sm">
+            <CardHeader className="border-b border-gray-200">
+              <CardTitle className="text-orange-600 text-xl">Payment</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <p className="mb-4 text-gray-600">Secure payment via Paystack</p>
+              <PaystackButton
+                {...paystackConfig}
+                text="Pay Now with Paystack"
+                onSuccess={handlePaystackSuccess}
+                onClose={handlePaystackClose}
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center"
+              >
+                <CreditCard className="mr-2 h-5 w-5" />
+                Pay ₦{total.toLocaleString()} Now
+              </PaystackButton>
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <Tabs defaultValue="description" className="mt-8">
-        <TabsList>
-          <TabsTrigger value="description">Description</TabsTrigger>
-          <TabsTrigger value="warranty">Warranty</TabsTrigger>
-          <TabsTrigger value="additional">Additional Information</TabsTrigger>
-        </TabsList>
-        <TabsContent value="description">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-semibold mb-2">Product Description</h3>
-              <p>{product.description}</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="warranty">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-semibold mb-2">Warranty Information</h3>
-              <p>{product.warranty}</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="additional">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-semibold mb-2">Additional Information</h3>
-              <p>{product.additionalInfo}</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        <Card className="border-gray-200 shadow-sm">
+          <CardHeader className="border-b border-gray-200">
+            <CardTitle className="text-orange-600 text-xl">Order Summary</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              {cartItems.map((item) => (
+                <div key={item._id} className="flex justify-between">
+                  <span>{item.name} x {item.quantity}</span>
+                  <span>₦{(item.price * item.quantity).toLocaleString()}</span>
+                </div>
+              ))}
+              <Separator className="my-4" />
+              <div className="flex justify-between font-bold">
+                <span>Total Items:</span>
+                <span>{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</span>
+              </div>
+              <div className="flex justify-between font-bold text-orange-600">
+                <span>Total Amount:</span>
+                <span>₦{total.toLocaleString()}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

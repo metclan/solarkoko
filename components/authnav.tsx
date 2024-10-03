@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SignoutButton } from './signout-button';
 import { NavSearchInput } from './search';
-import { Sun, Menu, X, } from 'lucide-react'
+import { Menu, X, } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { motion, AnimatePresence } from "framer-motion"
 import SolarKokoLogo from './logo';

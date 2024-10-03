@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sun, User, Menu, X } from 'lucide-react'
+import {  User, Menu, X } from 'lucide-react'
 import { NavSearchInput } from './search';
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from 'react';

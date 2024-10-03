@@ -1,89 +1,90 @@
 "use client"
 
-import React, { useState } from 'react'
-import { useCartStore } from '@/state-management/providers/cart-provider'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { PaystackButton } from 'react-paystack'
-import { PlusCircle, Edit2, CreditCard } from 'lucide-react'
+// import React, { useState } from 'react'
+// import { useCartStore } from '@/state-management/providers/cart-provider'
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+// import { Input } from "@/components/ui/input"
+// import { Label } from "@/components/ui/label"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { Button } from "@/components/ui/button"
+// import { Separator } from "@/components/ui/separator"
+// import { PaystackButton } from 'react-paystack'
+// import { PlusCircle, Edit2, CreditCard } from 'lucide-react'
 
-const existingAddresses = [
-  {
-    id: 1,
-    name: "Chibyke Harmony",
-    street: "Tetlow Road",
-    city: "Owerri-Wetheral",
-    state: "Imo",
-    zipCode: "",
-    phone: "+234 8166211248",
-    isDefault: true
-  },
-  {
-    id: 2,
-    name: "Chibyke Harmony",
-    street: "123 Solar Street",
-    city: "Lagos",
-    state: "Lagos",
-    zipCode: "",
-    phone: "+234 8166211248",
-    isDefault: false
-  }
-]
+// const existingAddresses = [
+//   {
+//     id: 1,
+//     name: "Chibyke Harmony",
+//     street: "Tetlow Road",
+//     city: "Owerri-Wetheral",
+//     state: "Imo",
+//     zipCode: "",
+//     phone: "+234 8166211248",
+//     isDefault: true
+//   },
+//   {
+//     id: 2,
+//     name: "Chibyke Harmony",
+//     street: "123 Solar Street",
+//     city: "Lagos",
+//     state: "Lagos",
+//     zipCode: "",
+//     phone: "+234 8166211248",
+//     isDefault: false
+//   }
+// ]
 
 export default function CheckoutPage() {
-  const { cartItems} = useCartStore(state => state)
-  const total = 100
-  const [selectedAddressId, setSelectedAddressId] = useState(existingAddresses.find(addr => addr.isDefault)?.id || 1)
-  const [isAddingNewAddress, setIsAddingNewAddress] = useState(false)
-  const [newAddress, setNewAddress] = useState({
-    name: '',
-    street: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    phone: ''
-  })
-  const [deliveryMethod, setDeliveryMethod] = useState('standard')
+//   const { cartItems} = useCartStore(state => state)
+//   const total = 100
+//   const [selectedAddressId, setSelectedAddressId] = useState(existingAddresses.find(addr => addr.isDefault)?.id || 1)
+//   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false)
+//   const [newAddress, setNewAddress] = useState({
+//     name: '',
+//     street: '',
+//     city: '',
+//     state: '',
+//     zipCode: '',
+//     phone: ''
+//   })
+//   const [deliveryMethod, setDeliveryMethod] = useState('standard')
 
-  const handleNewAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewAddress({ ...newAddress, [e.target.name]: e.target.value })
-  }
+//   const handleNewAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setNewAddress({ ...newAddress, [e.target.name]: e.target.value })
+//   }
 
-  const handleAddNewAddress = () => {
-    console.log("New address to be added:", newAddress)
-    setIsAddingNewAddress(false)
-    setNewAddress({
-      name: '',
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      phone: ''
-    })
-  }
+//   const handleAddNewAddress = () => {
+//     console.log("New address to be added:", newAddress)
+//     setIsAddingNewAddress(false)
+//     setNewAddress({
+//       name: '',
+//       street: '',
+//       city: '',
+//       state: '',
+//       zipCode: '',
+//       phone: ''
+//     })
+//   }
 
-  const handlePaystackSuccess = (reference : string) => {
-    console.log("Payment successful", reference)
-  }
+//   const handlePaystackSuccess = (reference : string) => {
+//     console.log("Payment successful", reference)
+//   }
 
-  const handlePaystackClose = () => {
-    console.log("Payment window closed")
-  }
+//   const handlePaystackClose = () => {
+//     console.log("Payment window closed")
+//   }
 
-  const paystackConfig = {
-    reference: (new Date()).getTime().toString(),
-    email: "customer@example.com",
-    amount: total * 100,
-    publicKey: 'YOUR_PAYSTACK_PUBLIC_KEY',
-  }
+//   const paystackConfig = {
+//     reference: (new Date()).getTime().toString(),
+//     email: "customer@example.com",
+//     amount: total * 100,
+//     publicKey: 'YOUR_PAYSTACK_PUBLIC_KEY',
+//   }
 
   return (
     <div className="container mx-auto px-4 py-8 bg-white">
-      <h1 className="text-3xl font-bold mb-8 text-center text-orange-600">Checkout</h1>
+      <h1>Page still under construction</h1>
+      {/* <h1 className="text-3xl font-bold mb-8 text-center text-orange-600">Checkout</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-8">
           <Card className="border-gray-200 shadow-sm">
@@ -249,7 +250,7 @@ export default function CheckoutPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   )
 }

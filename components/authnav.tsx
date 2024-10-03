@@ -14,6 +14,7 @@ import { NavSearchInput } from './search';
 import { Sun, Menu, X, } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { motion, AnimatePresence } from "framer-motion"
+import SolarKokoLogo from './logo';
 
 
 export default async function AuthenticatedNav() {
@@ -26,8 +27,7 @@ export default async function AuthenticatedNav() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <Sun className="h-8 w-8 text-orange-500" />
-              <span className="ml-2 text-2xl font-bold text-gray-900 hidden sm:inline">SolarKoko</span>
+              <SolarKokoLogo />
             </Link>
           </div>
           {/* Search Input */}

@@ -14,6 +14,7 @@ import { NavSearchInput } from './search';
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from 'react';
 import { Cart } from './cart';
+import SolarKokoLogo from './logo';
 
 export default function UnAutheticatedNav() {
   const [isMobileMenuOpen] = useState(false); 
@@ -24,8 +25,7 @@ export default function UnAutheticatedNav() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <Sun className="h-8 w-8 text-orange-500" />
-              <span className="ml-2 text-2xl font-bold text-gray-900 hidden sm:inline">SolarKoko</span>
+              <SolarKokoLogo />
             </Link>
           </div>
           {/* Search Input */}

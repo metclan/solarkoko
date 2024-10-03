@@ -22,7 +22,7 @@ type FeaturedProduct = {
 export default async function FeaturedProducts () {
     let featuredProducts:FeaturedProduct[] = [];
     const backendApi = getEndPoint()
-    const featuredProductsResponse = await fetch(`${backendApi}/api/products-display`, { method : 'GET', next : { revalidate : 604800}})
+    const featuredProductsResponse = await fetch(`${backendApi}/api/products-display`, { method : 'GET', next : { revalidate : 60 * 30}})
     if(featuredProductsResponse.ok){
       const featuredProductsResponseJson = await featuredProductsResponse.json()
       const featuredProductsResponseArray = Object.values(featuredProductsResponseJson) as FeaturedProduct[];

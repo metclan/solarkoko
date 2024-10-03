@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import localFont from "next/font/local";
 import "./globals.css";
 import { CartStoreProvider } from "@/state-management/providers/cart-provider";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,6 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <script>
+        window.dataLayer = window.dataLayer || [];
+      </script>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -27,6 +32,7 @@ export default function RootLayout({
           {children}
         </CartStoreProvider>
         <Toaster />
+        <GoogleAnalytics gaId="G-H2QPPK44PN" />
       </body>
     </html>
   );

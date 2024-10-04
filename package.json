@@ -38,6 +38,7 @@
     "html2pdf.js": "^0.10.2",
     "ioredis": "^5.4.1",
     "jose": "^5.9.2",
+    "jspdf-autotable": "^3.8.3",
     "lucide-react": "^0.441.0",
     "mongoose": "^8.6.2",
     "next": "^14.2.14",
@@ -61,7 +62,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.11",
-    "jspdf": "^2.5.1",
+    "jspdf": "^2.5.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

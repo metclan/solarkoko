@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
-const { MONGODB_URI, MONGODB_NAME } = process.env
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/"; 
+const MONGODB_NAME = process.env.MONGODB_NAME; 
 
 if (!MONGODB_URI) {
     throw new Error(

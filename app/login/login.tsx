@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useCartStore } from '@/state-management/providers/cart-provider';
 
 const steps = [
   { title: "Email", description: "Enter your email address" },
@@ -16,6 +17,7 @@ const steps = [
 
 
 export default function LoginPage() {
+  const { mergeCart } = useCartStore(state => state)
   const router = useRouter(); 
   const {toast} = useToast();
   const [loading, setLoading] = useState<boolean>(false)
@@ -46,12 +48,13 @@ export default function LoginPage() {
   async function handleFormSubmit  () {
     setLoading(true); 
     const signInUser = await verifyCodeForLogin(verificationCode, email)
-    console.log('the message returned is, ', signInUser)
     if(signInUser === null){
       toast({title : "Incorrect or expired verification code", variant : "destructive"})
       setLoading(false)
     }else{
       setLoading(false)
+      // Merge carts if there exists 
+      mergeCart()
       router.push('/')
     }
   }

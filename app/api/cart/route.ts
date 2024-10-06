@@ -36,24 +36,23 @@ export async function GET (req : NextRequest) {
 }
 export async function POST (req : NextRequest) {
     try {
-        const { quantity, price, image, name, productId } = await req.json();
+        const { quantity, price, image, name, productId } = await req.json()
         const cartAction = req.headers.get('action')
         let cart; 
         const cookie = req.cookies.get('session');
-        
+        const cartSession = req.cookies.get('_ci')
+        let cartId =  cartSession?.value
         // If user is authenticated
         if(cookie){
             const decryptedCookie = await decrypt(cookie.value)
             const userId = decryptedCookie?.userId
-            cart = await Cart.find({ user : userId})
+            cart = await Cart.findOne({ user : userId})
             // If there's no existing cart for this user 
             if(!cart){
                 cart = new Cart({ user : userId})
             }
         }else {
             // User isn't authenticated 
-            const cartSession = req.cookies.get('_ci')
-            let cartId =  cartSession?.value
             if(!cartId){
                 cartId = uuid();
                 const expiresAt = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000); // 30 minutes
@@ -68,7 +67,7 @@ export async function POST (req : NextRequest) {
             cart = await Cart.findOne({ sessionId : cartId})
             if(!cart){
                 cart = new Cart({ sessionId: cartId });
-            }
+        }}
             // Check for product
             const existingProductIndex = cart.items.findIndex((item : CartItem) => item.productId.toString() === productId)
             if(cartAction === "ADD_TO_CART"){
@@ -110,8 +109,44 @@ export async function POST (req : NextRequest) {
                     return NextResponse.json({ success : true, cartItems : cart.items, totalAmount : cart.totalAmount }, { status : 200})
                 }
             }
-
-        }
+            if (cartAction === "MERGE_CART") {
+                const decryptedCookie = await decrypt(cookie?.value);
+                const userId = decryptedCookie?.userId;
+                const sessionCart = await Cart.findOne({ sessionId: cartId });
+                const userCart = await Cart.findOne({ user: userId });
+                if (sessionCart) {
+                    // Create a map of existing items in user cart for quick lookup
+                    const userCartMap = new Map(userCart.items.map((item:CartItem) => [item.productId.toString(), item]));
+            
+                    sessionCart.items.forEach((sessionItem : CartItem) => {
+                        const existingItem = userCartMap.get(sessionItem.productId.toString()) as CartItem;
+                        if (existingItem) {
+                            // If item exists, add quantities
+                            existingItem.quantity += sessionItem.quantity;
+                        } else {
+                            // If item doesn't exist, add it to user cart
+                            userCart.items.push(sessionItem);
+                        }
+                    });
+            
+                    // Recalculate total amount
+                    userCart.totalAmount = userCart.items.reduce((total : number, item : CartItem) => total + (item.price * item.quantity), 0);
+                    await userCart.save();
+                    await Cart.deleteOne({ _id: sessionCart._id });
+                    
+                    return NextResponse.json({ 
+                        success: true, 
+                        cartItems: userCart.items, 
+                        totalAmount: userCart.totalAmount 
+                    }, { status: 200 });
+                }else{
+                    return NextResponse.json({ 
+                        success: true, 
+                        cartItems: cart.items, 
+                        totalAmount: cart.totalAmount 
+                    }, { status: 200 });
+                }
+            }
     }catch(err){
         console.log(err); 
         return NextResponse.json({ message : "Cannot add item to cart"}, { status : 500})

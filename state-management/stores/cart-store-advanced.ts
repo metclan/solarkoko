@@ -18,11 +18,11 @@ type CartState = {
     qtyAdjustmentLoadingButtons : string[],
 }
 type CartActions = {
-    // getCart : () => Promise<void>
     addToCart : (cartItem : CartItem) => Promise<void>; 
     removeFromCart : (id : string) => Promise<void>;
     increaseQuantity : (id : string) => Promise<void>;
     decreaseQuantity : (id : string) => Promise<void>;
+    mergeCart : () => Promise<void>;
 }
 
 export type CartStore = CartState & CartActions;
@@ -108,5 +108,14 @@ export function createCart (initState:CartState = defaultInitState) {
              }
              set(state => ({...state, qtyAdjustmentLoadingButtons : state.qtyAdjustmentLoadingButtons.filter(buttonIds => buttonIds !== productId )}))
         },
+        mergeCart : async () => {
+            const mergeCartsResponse = await fetch(`${getEndPoint()}/api/cart`, { method : "POST", body : JSON.stringify({}), headers : { 'action' : 'MERGE_CART'}})
+            if(mergeCartsResponse.ok){
+                const mergeCartJson = await mergeCartsResponse.json()
+                 const mergeCartData = mergeCartJson.cartItems
+                 const totalAmount = mergeCartJson.totalAmount
+                set(state => ({...state, cartItems : mergeCartData, totalAmount}))
+            }
+        }
     }))
 }

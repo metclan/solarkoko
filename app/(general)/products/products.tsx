@@ -9,8 +9,7 @@ import { ProductCardSkeleton } from "./product-card"
 import { useEffect, useState, useCallback } from "react"
 import { ProductSearchResult } from "./page"
 import { useSearchParams } from 'next/navigation'
-
-const backendApi = process.env.NEXT_PUBLIC_BACKEND_API || "http://localhost:3000"
+import { getEndPoint } from "@/utils/getEndPoint";
 
 export default function ProductSearch() {
   const [filteredProductsData, setFilteredProductsData] = useState<ProductSearchResult[]>([])
@@ -19,7 +18,7 @@ export default function ProductSearch() {
   const fetchProducts = useCallback(async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${backendApi}/api/products?${searchParams}`);
+      const response = await fetch(`${getEndPoint()}/api/products?${searchParams}`);
       if (response.ok) {
         const productsJson = await response.json();
         const productsArray = Object.values(productsJson) as ProductSearchResult[]

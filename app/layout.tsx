@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { CartStoreProvider } from "@/state-management/providers/cart-provider";
 import { GoogleAnalytics } from '@next/third-parties/google'
+import { ReactQueryClientProvider } from "@/components/react-query-client-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,19 +22,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <script>
-        window.dataLayer = window.dataLayer || [];
-      </script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+        </script>
 
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <CartStoreProvider>
-          {children}
-        </CartStoreProvider>
-        <Toaster />
-        <GoogleAnalytics gaId="G-H2QPPK44PN" />
-      </body>
-    </html>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+          <CartStoreProvider>
+            <ReactQueryClientProvider>
+              {children}
+            </ReactQueryClientProvider>
+          </CartStoreProvider>
+          <Toaster />
+          <GoogleAnalytics gaId="G-H2QPPK44PN" />
+        </body>
+      </html>
   );
 }

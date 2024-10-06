@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Mail, Phone, MessageCircle, Send } from 'lucide-react'
 
 export default function ContactPage() {
+  const salesNumber = process.env.NEXT_PUBLIC_SUPPORT_PHONE;
+  const salesEmail = process.env.NEXT_PUBLIC_SALES_EMAIL;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -95,17 +97,18 @@ export default function ContactPage() {
             <div className="space-y-4">
               <p className="flex items-center text-gray-600">
                 <Mail className="mr-2 h-5 w-5 text-orange-500" />
-                <span>support@solarkoko.com</span>
+                <span>{salesEmail}</span>
               </p>
               <p className="flex items-center text-gray-600">
                 <Phone className="mr-2 h-5 w-5 text-orange-500" />
-                <span>+2348166211248</span>
+                <span>{salesNumber}</span>
               </p>
               <div className="pt-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Chat</h3>
                 <p className="text-gray-600 mb-4">For faster responses, chat with us on WhatsApp:</p>
                 <a
-                  href="https://wa.me/+2348166211248"
+                
+                  href={`https://wa.me/${salesNumber}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700"

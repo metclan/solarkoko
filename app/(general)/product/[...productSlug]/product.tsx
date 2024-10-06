@@ -2,30 +2,13 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { useCartStore } from '@/state-management/providers/cart-provider'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
 import { Plus, Minus, ShoppingCart } from 'lucide-react'
-
-// interface ProductDescriptionProps {
-//   product: {
-//     _id: string
-//     name: string
-//     description: string
-//     images: string[]
-//     price: number
-//     category: string
-//     vendorName: string
-//     rating: number
-//     reviews: number
-//     specifications: { [key: string]: string }
-//     warranty: string
-//     additionalInfo: string
-//   }
-// }
+import { getEndPoint } from '@/utils/getEndPoint'
 
 interface ProductDescriptionProps {
   product : {
@@ -45,17 +28,18 @@ interface ProductDescriptionProps {
   }
 }
 export default function ProductDescription({ product }: ProductDescriptionProps) {
+  let loading = true; 
   const [quantity, setQuantity] = useState(1)
   const [currentImage, setCurrentImage] = useState(0)
-  const { addToCart } = useCartStore(state => state)
-  const handleAddToCart = () => {
-    addToCart({
-      _id: product._id,
-      name: product.name,
-      image: product.images[0].image,
-      price: product.price,
-      quantity: quantity,
-    }, 1)
+  async function  handleAddToCart () {
+    const addToCartResponse = await fetch(`${getEndPoint()}/api/cart`, { method : 'POST'})
+    if(addToCartResponse.ok){
+      console.log('product added to cart'); 
+      loading = false;
+    }else{
+      console.log('cannot add product to cart')
+      loading = false; 
+    }
   }
   return (
     <div className="container mx-auto px-4 py-8">
@@ -142,7 +126,7 @@ export default function ProductDescription({ product }: ProductDescriptionProps)
               <Plus className="h-4 w-4" />
             </Button>
             <Button className="ml-4 bg-orange-500 hover:bg-orange-600" onClick={handleAddToCart}>
-              <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+              {loading ? "looading" : <><ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart</>}
             </Button>
           </div>
 

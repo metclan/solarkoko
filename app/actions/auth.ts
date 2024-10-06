@@ -135,7 +135,6 @@ export async function genVerificationCode(email: string) {
 }
 
 export async function verifyCodeForLogin(verificationCode: string, email: string) {
-    let isSuccessful : null | boolean = null
     try {
         // Retrieve the stored verification code from Redis
         const storedCode = await redisClient.get(email);
@@ -148,20 +147,16 @@ export async function verifyCodeForLogin(verificationCode: string, email: string
             await redisClient.del(email);
             // Fetch user id 
             const user = await User.findOne({ email : email}, { _id : 1, role : 1})
-            if(!user) throw new Error()
+            if(!user) throw new Error("Incorrect email")
             //Create user session 
-            isSuccessful = true;
             await createSession(user._id, user.role)
+            return true; 
         } else {
             return null;
         }
     } catch (err) {
         console.error("Error in validateVerificationCode:", err);
         return null
-    }finally {
-        if(isSuccessful){
-            redirect("/")
-        }
     }
 }
 export async function verifyCodeForSignup(verificationCode: string, email: string) {

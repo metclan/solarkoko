@@ -1,5 +1,4 @@
 "use client"; 
-import React from 'react'
 import Image from 'next/image'
 import { ShoppingCart, Minus, Plus, Trash2 } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
@@ -15,11 +14,12 @@ import { Separator } from "@/components/ui/separator"
 import {formatCurrency}  from '@/app/utils/formatCurrency'
 import Link from 'next/link'
 
-export function Cart() {
-  const { cartItems, removeFromCart, increaseQuantity, decreaseQuantity } = useCartStore(state => state)
-
-  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
-
+export  function Cart() {
+  const {  removeFromCart, increaseQuantity, decreaseQuantity, cartItems, totalAmount, qtyAdjustmentLoadingButtons} = useCartStore(state => state)
+  function buttonState (productId : string) {
+    const isLoading = qtyAdjustmentLoadingButtons.includes(productId)
+    return isLoading;
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -42,7 +42,7 @@ export function Cart() {
           <>
             <ScrollArea className="h-[300px] overflow-y-auto">
               {cartItems.map((item) => (
-                <div key={item._id} className="flex items-center space-x-4 py-4 px-4 hover:bg-gray-50">
+                <div key={item.productId} className="flex items-center space-x-4 py-4 px-4 hover:bg-gray-50">
                   <div className="relative w-24 h-24 flex-shrink-0">
                     <Image
                       src={item.image}
@@ -54,19 +54,19 @@ export function Cart() {
                   </div>
                   <div className="flex-grow">
                     <h4 className="font-medium text-gray-900">{item.name}</h4>
-                    <p className="text-sm text-gray-500">{item.size}</p>
+                    {/* <p className="text-sm text-gray-500">{item.size}</p> */}
                     <p className="font-semibold text-orange-600">{formatCurrency(item.price)}</p>
                     <div className="flex items-center mt-2">
-                      <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => decreaseQuantity(item._id)}>
+                      <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => decreaseQuantity(item.productId)} disabled={buttonState(item.productId)}>
                         <Minus className="h-4 w-4" />
                       </Button>
                       <span className="mx-2 font-medium">{item.quantity}</span>
-                      <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => increaseQuantity(item._id)}>
+                      <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => increaseQuantity(item.productId)} disabled={buttonState(item.productId)}>
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => removeFromCart(item._id)} className="text-gray-400 hover:text-red-500">
+                  <Button variant="ghost" size="sm" onClick={() => removeFromCart(item.productId)} className="text-gray-400 hover:text-red-500" disabled={buttonState(item.productId)}>
                     <Trash2 className="h-5 w-5" />
                   </Button>
                 </div>
@@ -75,7 +75,7 @@ export function Cart() {
             <div className="p-4 bg-gray-50">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-gray-600">Subtotal ({cartItems.length} items)</span>
-                <span className="text-2xl font-bold text-gray-900">{formatCurrency(subtotal)}</span>
+                <span className="text-2xl font-bold text-gray-900">{formatCurrency(totalAmount)}</span>
               </div>
               <Separator className="my-4" />
               <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 text-lg" asChild>

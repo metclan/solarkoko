@@ -4,6 +4,8 @@ import Link from "next/link"
 import { useState } from "react"
 
 export function Prenav() {
+  const salesNumber = process.env.NEXT_PUBLIC_SUPPORT_PHONE;
+  const salesEmail = process.env.NEXT_PUBLIC_SALES_EMAIL;
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
@@ -12,9 +14,9 @@ export function Prenav() {
         <div className="flex items-center justify-between h-10 md:h-12">
           <div className="hidden md:flex items-center">
             <Phone className="h-4 w-4 text-gray-500 mr-2" />
-            <span className="text-sm text-gray-500">+234 8166211248</span>
+            <span className="text-sm text-gray-500">{salesNumber}</span>
             <Mail className="h-4 w-4 text-gray-500 ml-4 mr-2" />
-            <span className="text-sm text-gray-500">sales@solarkoko.com</span>
+            <span className="text-sm text-gray-500">{salesEmail}</span>
           </div>
           <div className="hidden md:flex items-center space-x-4">
             <Link href="/shipping" className="text-sm text-gray-500 hover:text-gray-700">Shipping</Link>

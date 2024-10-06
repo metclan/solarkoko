@@ -2,7 +2,6 @@ import { createStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { getEndPoint } from '@/utils/getEndPoint';
 import { toast } from '@/hooks/use-toast';
-import { verifySession } from '@/lib/dal';
 
 type CartItem = {
     _id: string;
@@ -46,6 +45,7 @@ const defaultInitState: CartState = {
 }
 
 const saveToDatabase = async (cartItems: CartItem[]): Promise<void> => {
+    console.log(cartItems);
     // Implement your database saving logic here
     // const fetchProduct = await fetch(getEndPoint(), { method : "GET"})
     // Simulating an API call

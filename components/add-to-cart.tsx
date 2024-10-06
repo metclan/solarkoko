@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "./ui/button"
 import { ShoppingCart } from "lucide-react"
-import { useCartStore } from "@/state-management/providers/cart-provider"
 import { Loader2 } from "lucide-react"
+import { useCartStore } from "@/state-management/providers/cart-provider";
 type ButtonProps = {
     item : {
         _id : string;
@@ -14,22 +14,22 @@ type ButtonProps = {
     quantityRequested : number;
 
 }
-export function AddToCartButton ({item : { _id, name, image , price, quantity }, quantityRequested } : ButtonProps) {
-    const {addToCart, pendingRequests} = useCartStore(state => state)
-    const isLoading = pendingRequests.includes(_id);
-    function handleAddToCart() {
+export function AddToCartButton ({item : { _id, name, image , price, quantity }} : ButtonProps) {
+    const { addToCart, addToCartLoadingButtons } = useCartStore(state => state)
+    const isLoading = addToCartLoadingButtons.includes(_id)
+    function handleAddToCart () {
         addToCart({
-            _id,
-            name, 
-            image, 
+            productId : _id, 
             price, 
-            quantity
-        }, quantityRequested)
-      }
+            image,
+            quantity, 
+            name
+        })
+    }
     return(
         <>
             {isLoading ?  
-            <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white" onClick={handleAddToCart}>
+            <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white" disabled>
                 <Loader2 className="h-4 w-4 animate-spin" />
             </Button> 
             : 

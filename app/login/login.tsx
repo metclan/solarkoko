@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useCartStore } from '@/state-management/providers/cart-provider';
+import { useRouter } from 'next/navigation';
 
 const steps = [
   { title: "Email", description: "Enter your email address" },
@@ -15,6 +17,8 @@ const steps = [
 
 
 export default function LoginPage() {
+  const router = useRouter(); 
+  const { setIsAuthenticated } = useCartStore(state => state) 
   const {toast} = useToast();
   const [loading, setLoading] = useState<boolean>(false)
   const [currentStep, setCurrentStep] = useState<number>(0)
@@ -49,7 +53,9 @@ export default function LoginPage() {
       toast({title : "Incorrect or expired verification code", variant : "destructive"})
       setLoading(false)
     }else{
+      setIsAuthenticated(true);
       setLoading(false)
+      router.push('/')
     }
   }
   const renderStep = () => {

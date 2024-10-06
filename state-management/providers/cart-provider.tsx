@@ -1,7 +1,7 @@
 'use client'; 
 import { type ReactNode, createContext, useRef, useContext} from 'react';
 import {useStore} from 'zustand'; 
-import { type CartStore, createCart} from '../stores/cart-store';
+import { type CartStore, createCart} from '../stores/cart-store-advanced';
 
 export type CartStoreApi = ReturnType<typeof createCart>
 

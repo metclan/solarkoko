@@ -14,7 +14,6 @@ if (!MONGODB_NAME) {
     )
 }
 export default async function  connectToDb () {
-    console.log('the db name is ', MONGODB_NAME)
     try { 
         await mongoose.connect(MONGODB_URI  as string, { dbName : MONGODB_NAME})
         console.log("DB CONNECTED")

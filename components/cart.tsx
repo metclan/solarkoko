@@ -7,14 +7,17 @@ import { useCartStore } from '@/state-management/providers/cart-provider'
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {formatCurrency}  from '@/app/utils/formatCurrency'
+import { usePathname } from 'next/navigation';
 import Link from 'next/link'
 
 export  function Cart() {
+  const pathname = usePathname(); 
   const {  removeFromCart, increaseQuantity, decreaseQuantity, cartItems, totalAmount, qtyAdjustmentLoadingButtons} = useCartStore(state => state)
   function buttonState (productId : string) {
     const isLoading = qtyAdjustmentLoadingButtons.includes(productId)
@@ -78,11 +81,13 @@ export  function Cart() {
                 <span className="text-2xl font-bold text-gray-900">{formatCurrency(totalAmount)}</span>
               </div>
               <Separator className="my-4" />
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 text-lg" asChild>
-                <Link href="/checkout">
-                  Continue To Checkout
-                </Link>
-              </Button>
+              <DropdownMenuItem asChild>
+                <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 text-lg cursor-pointer" asChild>
+                  <Link href="/checkout">
+                    Continue To Checkout
+                  </Link>
+                </Button>
+              </DropdownMenuItem>
               <p className="text-sm text-orange-600 mt-4 text-center font-medium">
                 Psst, secure your solar gear now before it&apos;s gone!
               </p>

@@ -3,7 +3,7 @@ import { emailVerificationHtmlTemplate, loginVerificationHtmlTemplate, onSuccess
 export async function sendEmailVerificationMail (to : string, verificationCode : string) {
   try { 
       await nodemailerTransporter.sendMail({
-       from: '"SolarKoko Email Verification" <support@stocksavvy.metclan.com>',
+       from: '"SolarKoko Email Verification" <support@solarkoko.com>',
        to: to,
        subject: "Verify Your Email Address",
        html: emailVerificationHtmlTemplate.replace("{{verificationCode}}", verificationCode)
@@ -20,7 +20,7 @@ export async function sendEmailVerificationMail (to : string, verificationCode :
 export async function sendEmailVerificationLoginMail (to : string, verificationCode : string) {
   try { 
       await nodemailerTransporter.sendMail({
-       from: '"SolarKoko Email Verification" <support@stocksavvy.metclan.com>',
+       from: '"SolarKoko Email Verification" <support@solarkoko.com>',
        to: to,
        subject: "Verify Your Email Address",
        html: loginVerificationHtmlTemplate.replace("{{loginVerificationCode}}", verificationCode)
@@ -38,7 +38,7 @@ export async function sendEmailVerificationLoginMail (to : string, verificationC
 export async function sendVendorWelcomeEmail (to : string, fullname : string) {
   try { 
       await nodemailerTransporter.sendMail({
-       from: '"SolarKoko Vendor" <support@stocksavvy.metclan.com>',
+       from: '"SolarKoko Vendor" <support@solarkoko.com>',
        to: to,
        subject: "Welcome to SolarKoko's Vendor Community - You're Ready to Sell!",
        html: onSuccessVendorRegistrationHtmlTemplate.replace("{{fullName}}", fullname)

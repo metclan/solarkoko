@@ -39,6 +39,9 @@ export default async function middleware(request: NextRequest) {
                     return NextResponse.redirect(`${getEndPoint()}/login`)
 
                 }
+                if(pathname.startsWith('/checkout')){
+                    return NextResponse.next()
+                }
             }
             return NextResponse.redirect(`${getEndPoint()}/login`)
             

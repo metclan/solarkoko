@@ -81,13 +81,13 @@ export async function createVendor (formState : FormState, formData : FormData):
                     privacyPolicy: privavyPolicy === 'on' && true,
                 },
             },
-            address : {
+            addresses : [{
                 city, 
                 postalCode,
                 street : businessAddress, 
                 state, 
                 country : 'Nigeria'
-            },
+            }],
         })
 
         isSuccessful = true; 

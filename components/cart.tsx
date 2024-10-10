@@ -13,11 +13,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {formatCurrency}  from '@/app/utils/formatCurrency'
-import { usePathname } from 'next/navigation';
 import Link from 'next/link'
 
 export  function Cart() {
-  const pathname = usePathname(); 
   const {  removeFromCart, increaseQuantity, decreaseQuantity, cartItems, totalAmount, qtyAdjustmentLoadingButtons} = useCartStore(state => state)
   function buttonState (productId : string) {
     const isLoading = qtyAdjustmentLoadingButtons.includes(productId)

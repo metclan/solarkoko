@@ -4,6 +4,37 @@ import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import { Calculator } from 'lucide-react'
 
+export const metadat = {
+  "title": "Load Size Calculator - Calculate Power Consumption Effortlessly",
+  "description": "Use our Load Size Calculator to effortlessly calculate the power consumption of your electrical appliances. Discover the total power required to choose the right solar inverter, panel, and battery for your solar system.",
+  "keywords": [
+    "load size calculator",
+    "solar power consumption",
+    "solar panel calculator",
+    "inverter sizing",
+    "battery sizing",
+    "solar system power requirements",
+    "calculate power consumption",
+    "solar energy calculator",
+    "choose solar inverter",
+    "solar panel sizing"
+  ],
+  "author": "MetClan Technologies",
+  "robots": "index, follow",
+  "og": {
+    "title": "Load Size Calculator - Effortlessly Calculate Power Consumption",
+    "description": "Accurately calculate the power consumption of your electrical appliances and find the right solar system setup, including solar inverter, panel, and battery sizing.",
+    "url": "https://solarkoko.com/tools/load-calculator",
+    "image": "https://solarkoko.com/tools/load-calculator"
+  },
+  "twitter": {
+    "card": "summary_large_image",
+    "title": "Load Size Calculator - Power Consumption and Solar Sizing",
+    "description": "Easily calculate the total power consumption of your home or business appliances to determine the right solar inverter, panel, and battery for your needs.",
+    "image": "https://solarkoko.com/tools/load-calculator"
+  }
+}
+
 const tools = [
   {
     title: "Load Size Calculator",

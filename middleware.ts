@@ -7,7 +7,7 @@ export default async function middleware(request: NextRequest) {
     try {
         const pathname = request.nextUrl.pathname
         const vendorRoute = "/vendor"
-        const customerRoutes = ["/customer", "/orders", "/checkout"]
+        const customerRoutes = ["/customer", "/orders", "/checkout",]
         const authenticationRoutes = ['/login', '/signup']
         const protectedRoutes = ['/become-vendor', '/welcome-vendor']
         const cookie =  request.cookies
@@ -39,8 +39,8 @@ export default async function middleware(request: NextRequest) {
                     return NextResponse.redirect(`${getEndPoint()}/login`)
 
                 }
-                if(pathname.startsWith('/checkout')){
-                    return NextResponse.next()
+                if(pathname === '/checkout'){
+                    return NextResponse.redirect(`${getEndPoint()}/checkout/addresses`)
                 }
             }
             return NextResponse.redirect(`${getEndPoint()}/login`)

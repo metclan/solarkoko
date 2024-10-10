@@ -70,6 +70,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="Enter your email"
                   value={email}
+                  disabled={loading}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -80,6 +81,7 @@ export default function LoginPage() {
                   type="password"
                   placeholder="Create a password"
                   value={password}
+                  disabled={loading}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
@@ -95,6 +97,7 @@ export default function LoginPage() {
                 type="text"
                 placeholder="Enter verification code"
                 value={verificationCode}
+                disabled={loading}
                 onChange={(e) => setVerificationCode(e.target.value)}
               />
             </div>
@@ -145,6 +148,7 @@ export default function LoginPage() {
                 Back
               </Button>
               <Button
+                disabled={loading}
                 onClick={currentStep === steps.length - 1 ? handleFormSubmit : handleNext}
               >
                 {loading ? <Loader2 className='mr-2 h-4 w-4 animate-spin'/> : (currentStep === steps.length - 1 ? "Verify" : "Login")}

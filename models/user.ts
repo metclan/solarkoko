@@ -11,13 +11,13 @@ const UserSchema = new Schema({
     phone: { type: String, required: true },
     
     // Address (shared by customers and vendors)
-    address: {
+    addresses: [{
+        name: { type: String },
         street: { type: String },
         city: { type: String },
         state: { type: String },
-        country: { type: String },
         postalCode: { type: String }
-    },
+    }],
     
     // Vendor-specific fields (if the user becomes a vendor)
     vendorDetails: {

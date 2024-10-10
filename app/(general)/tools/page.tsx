@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import { Calculator } from 'lucide-react'
 
-export const metadat = {
+export const metadata = {
   "title": "Load Size Calculator - Calculate Power Consumption Effortlessly",
   "description": "Use our Load Size Calculator to effortlessly calculate the power consumption of your electrical appliances. Discover the total power required to choose the right solar inverter, panel, and battery for your solar system.",
   "keywords": [
